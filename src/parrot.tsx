@@ -4,16 +4,31 @@ import { useEffect, useState } from 'react'
 import { List } from '@raycast/api'
 import querystring from 'querystring'
 
-class Result {
-    q:string
-    err: string
-    result: string
-    constructor(q: string, result: string, err: string) {
-        this.q = q
-        this.err = err
-        this.result = result
-    }
+interface ITranslateResult {
+    translation: []
+    webdict?: string
+    errorCode: string
+    web?: ITranslateResultWebItem[]
+    basic: ITranslateResultBasicItem,
+
+    // unused
+    l: string
+    query: string
+    returnPhrase: []
 }
+
+interface ITranslateResultWebItem {
+    key: string
+    value: string[]
+}
+
+interface ITranslateResultBasicItem {
+    explains: string[]
+    phonetic?: string
+    'us-phonetic': string
+    'uk-phonetic': string
+}
+
 let delayFetchTranslateAPITimer:NodeJS.Timeout
 export default function () {
     const [inputState, setInputState] = useState<string>()
@@ -43,9 +58,10 @@ export default function () {
                 q: inputQueryText,
                 curtime: timestamp
             }))
-                .then( ({data}) => {
-                    console.table(new Result(data?.query, data?.translation, data?.errorCode))
-                })
+            .then( ({data}) => {
+                const a: ITranslateResult = data
+                console.log(a)
+            })
         }, 1000)
     }, [inputState])
 
