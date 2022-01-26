@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import axios from "axios";
-import { useEffect, useState } from 'react'
-import { List } from '@raycast/api'
+import {Component, Fragment, useEffect, useState} from 'react'
+import {ActionPanel, Icon, List, ListItem, ListSection} from '@raycast/api'
 import querystring from 'querystring'
 
 interface ITranslateResult {
@@ -9,7 +9,7 @@ interface ITranslateResult {
     webdict?: string
     errorCode: string
     web?: ITranslateResultWebItem[]
-    basic: ITranslateResultBasicItem,
+    basic?: ITranslateResultBasicItem,
 
     // unused
     l: string
@@ -30,11 +30,29 @@ interface ITranslateResultBasicItem {
 }
 
 let delayFetchTranslateAPITimer:NodeJS.Timeout
+
+class TranslateResultView extends Component<ITranslateResult> {
+    render() {
+        return (
+            <List.Item title='red' />
+        )
+    }
+}
+
+class Red<ITranslateResult> {
+
+}
+
 export default function () {
-    const [inputState, setInputState] = useState<string>()
+    const [inputState, updateInputState] = useState<string>()
+    const [isLoadingState, updateLoadingState] = useState<boolean>(false)
+    const [translateResultState, updateTranslateResultState] = useState<ITranslateResult>()
 
     useEffect(() => {
-        if (!inputState || inputState.trim().length === 0) return
+        // Prevent when mounted run
+        if (!inputState) {
+            return
+        }
 
         const APP_ID = '0d68776be7e9be0b'
         const APP_KEY = 'MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM'
@@ -46,7 +64,6 @@ export default function () {
         const sha256Content = APP_ID + inputQueryText + salt + timestamp + APP_KEY
         const sign = sha256.update(sha256Content).digest('hex')
 
-        clearTimeout(delayFetchTranslateAPITimer)
         delayFetchTranslateAPITimer = setTimeout(() => {
             axios.post('https://openapi.youdao.com/api', querystring.stringify({
                 sign,
@@ -58,20 +75,76 @@ export default function () {
                 q: inputQueryText,
                 curtime: timestamp
             }))
-            .then( ({data}) => {
-                const a: ITranslateResult = data
-                console.log(a)
+            .then( res => {
+                updateLoadingState(false)
+                updateTranslateResultState(res.data)
             })
         }, 1000)
     }, [inputState])
 
-    function updateInputState(inputText:string) {
-        inputText.trim().length > 0 && setInputState(inputText)
+    function onInputChangeEvt(inputText:string) {
+        clearTimeout(delayFetchTranslateAPITimer)
+
+        if (inputText.trim().length > 0) {
+            updateLoadingState(true)
+            updateInputState(inputText)
+        }
+        else {
+            updateTranslateResultState(undefined)
+            updateLoadingState(false)
+        }
+    }
+
+    function ListDetail() {
+        // success
+        if (translateResultState) {
+            if (translateResultState.errorCode === '0') {
+                return (
+                    <Fragment>
+                        <ListSection title={translateResultState?.basic?.phonetic }>
+                            <ListItem
+                                title={ translateResultState.translation.join(' ') }
+                                subtitle={ translateResultState?.basic?.explains.join(' ') } accessoryIcon={ Icon.Clipboard }/>
+                        </ListSection>
+                        <ListSection title="Other results">
+                            {
+                                translateResultState?.web?.map( (webResultItem, idx) => {
+                                    return (
+                                        <ListItem title={ webResultItem.key } subtitle={ webResultItem.value.join(' ') } key={idx}/>
+                                    )
+                                })
+                            }
+                        </ListSection>
+                    </Fragment>
+                )
+            }
+
+            return  <ListItem title={'Transition Error'} subtitle={translateResultState.errorCode} />
+        }
+
+        // fail
+        return null
     }
 
     return (
-        <List onSearchTextChange={ inputText => updateInputState(inputText) }>
-            <List.Item title={'red'}/>
+        <List searchBarPlaceholder={'translate to..'}
+              onSearchTextChange={ inputText => onInputChangeEvt(inputText) } isLoading={ isLoadingState }>
+            <ListDetail/>
         </List>
     )
 }
+// import { Color, Icon, List } from "@raycast/api";
+//
+// export default function Command() {
+//     return (
+//         <List navigationTitle="Parrot translate from En to chinease">
+//             <List.Item title="Built-in color" icon={{ source: Icon.ArrowClockwise, tintColor: Color.Red }} />
+//             <List.Item title="HEX" icon={{ source: Icon.Bubble, tintColor: "#FF0000" }} />
+//             <List.Item title="Short HEX" icon={{ source: Icon.Clipboard, tintColor: "#F00" }} />
+//             <List.Item title="RGBA" icon={{ source: Icon.EyeSlash, tintColor: "rgb(255, 0, 0)" }} />
+//             <List.Item title="RGBA Percentage" icon={{ source: Icon.Text, tintColor: "rgb(255, 0, 0, 1.0)" }} />
+//             <List.Item title="HSL" icon={{ source: Icon.SpeakerSlash, tintColor: "hsla(200, 20%, 33%, 0.2)" }} />
+//             <List.Item title="Keywords" icon={{ source: Icon.MemoryChip, tintColor: "red" }} />
+//         </List>
+//     );
+// };
