@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import axios from "axios";
 import {Component, Fragment, useEffect, useState} from 'react'
-import {ActionPanel, Icon, List, ListItem, ListSection} from '@raycast/api'
+import {ActionPanel, Icon, List, ListItem, ListSection, ActionPanelItem, OpenInBrowserAction, CopyToClipboardAction } from '@raycast/api'
 import querystring from 'querystring'
 
 interface ITranslateResult {
@@ -68,8 +68,8 @@ export default function () {
             axios.post('https://openapi.youdao.com/api', querystring.stringify({
                 sign,
                 salt,
-                from: 'en',
-                to: 'zh-CHS',
+                from: 'auto',
+                to: 'auto',
                 signType: 'v3',
                 appKey: APP_ID,
                 q: inputQueryText,
@@ -101,16 +101,45 @@ export default function () {
             if (translateResultState.errorCode === '0') {
                 return (
                     <Fragment>
-                        <ListSection title={translateResultState?.basic?.phonetic }>
+                        <ListSection>
                             <ListItem
-                                title={ translateResultState.translation.join(' ') }
-                                subtitle={ translateResultState?.basic?.explains.join(' ') } accessoryIcon={ Icon.Clipboard }/>
+                                actions={
+                                    <ActionPanel>
+                                        <CopyToClipboardAction
+                                            title="Copy"
+                                            content={ translateResultState.translation.join(' ') }/>
+                                    </ActionPanel>
+                                }
+                                title={ translateResultState.translation.join(' $ ') }
+                                subtitle={ '🇺🇸 ' + translateResultState?.basic?.phonetic + ' |  🇬🇧 ' + translateResultState?.basic?.["uk-phonetic"]  } />
+                            {
+                                translateResultState?.basic?.explains?.map( (item, idx) => {
+                                    return (
+                                        <ListItem title={item}  key={ idx }/>
+                                    )
+                                })
+                            }
                         </ListSection>
-                        <ListSection title="Other results">
+                        {/*<ListSection title="">*/}
+
+                        {/*</ListSection>*/}
+                        {/* subtitle="You might see the same result" */}
+                        <ListSection title="Other from Web Results">
                             {
                                 translateResultState?.web?.map( (webResultItem, idx) => {
                                     return (
-                                        <ListItem title={ webResultItem.key } subtitle={ webResultItem.value.join(' ') } key={idx}/>
+                                        <ListItem
+                                            key={idx}
+                                            title={ webResultItem.key }
+                                            subtitle={ webResultItem.value.join(' ; ') }
+                                            actions={
+                                                <ActionPanel>
+                                                    <CopyToClipboardAction
+                                                        title="CopyToClipboardAction"
+                                                        content={ translateResultState.translation.join(' $ ') }/>
+                                                </ActionPanel>
+                                            }
+                                        />
                                     )
                                 })
                             }
@@ -127,24 +156,16 @@ export default function () {
     }
 
     return (
-        <List searchBarPlaceholder={'translate to..'}
+        <List searchBarPlaceholder={'Translate to..'}
+              actions={
+                  <ActionPanel>
+                      <ActionPanelItem title="en2ch" icon={Icon.Globe}/>
+                      <ActionPanelItem title="ch2en" icon={Icon.Globe}/>
+                      <ActionPanelItem title="en2jp" icon={Icon.Globe}/>
+                  </ActionPanel>
+              }
               onSearchTextChange={ inputText => onInputChangeEvt(inputText) } isLoading={ isLoadingState }>
             <ListDetail/>
         </List>
     )
 }
-// import { Color, Icon, List } from "@raycast/api";
-//
-// export default function Command() {
-//     return (
-//         <List navigationTitle="Parrot translate from En to chinease">
-//             <List.Item title="Built-in color" icon={{ source: Icon.ArrowClockwise, tintColor: Color.Red }} />
-//             <List.Item title="HEX" icon={{ source: Icon.Bubble, tintColor: "#FF0000" }} />
-//             <List.Item title="Short HEX" icon={{ source: Icon.Clipboard, tintColor: "#F00" }} />
-//             <List.Item title="RGBA" icon={{ source: Icon.EyeSlash, tintColor: "rgb(255, 0, 0)" }} />
-//             <List.Item title="RGBA Percentage" icon={{ source: Icon.Text, tintColor: "rgb(255, 0, 0, 1.0)" }} />
-//             <List.Item title="HSL" icon={{ source: Icon.SpeakerSlash, tintColor: "hsla(200, 20%, 33%, 0.2)" }} />
-//             <List.Item title="Keywords" icon={{ source: Icon.MemoryChip, tintColor: "red" }} />
-//         </List>
-//     );
-// };
