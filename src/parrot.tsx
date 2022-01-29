@@ -1,7 +1,16 @@
 import crypto from 'crypto'
 import axios from "axios";
 import {Component, Fragment, useEffect, useState} from 'react'
-import {ActionPanel, Icon, List, ListItem, ListSection, ActionPanelItem, OpenInBrowserAction, CopyToClipboardAction } from '@raycast/api'
+import {
+    ActionPanel,
+    ActionPanelItem,
+    CopyToClipboardAction,
+    Detail,
+    Icon,
+    List,
+    ListItem,
+    ListSection
+} from '@raycast/api'
 import querystring from 'querystring'
 
 interface ITranslateResult {
@@ -69,7 +78,7 @@ export default function () {
                 sign,
                 salt,
                 from: 'auto',
-                to: 'auto',
+                to: 'zh-CHS',
                 signType: 'v3',
                 appKey: APP_ID,
                 q: inputQueryText,
@@ -103,6 +112,17 @@ export default function () {
                     <Fragment>
                         <ListSection>
                             <ListItem
+                                icon={ Icon.Star }
+                                title={ translateResultState?.query }
+                                actions={
+                                    <ActionPanel>
+                                        <ActionPanelItem title="🔊 Play sound" icon={ Icon.Message }/>
+                                    </ActionPanel>
+                                }
+                                subtitle={ '( 🇺🇸 ' + translateResultState?.basic?.phonetic + ' |  🇬🇧 ' + translateResultState?.basic?.["uk-phonetic"] + ' )'   } />
+                        </ListSection>
+                        <ListSection title={ 'Abstract'}>
+                            <ListItem
                                 actions={
                                     <ActionPanel>
                                         <CopyToClipboardAction
@@ -110,19 +130,25 @@ export default function () {
                                             content={ translateResultState.translation.join(' ') }/>
                                     </ActionPanel>
                                 }
-                                title={ translateResultState.translation.join(' $ ') }
-                                subtitle={ '🇺🇸 ' + translateResultState?.basic?.phonetic + ' |  🇬🇧 ' + translateResultState?.basic?.["uk-phonetic"]  } />
+                                icon={ Icon.Text }
+                                title={ translateResultState.translation.join('') }/>
                             {
                                 translateResultState?.basic?.explains?.map( (item, idx) => {
                                     return (
-                                        <ListItem title={item}  key={ idx }/>
+                                        <ListItem
+                                            key={ idx }
+                                            icon={ Icon.Text }
+                                            title={item} actions={
+                                                <ActionPanel>
+                                                    <CopyToClipboardAction
+                                                        title="Copy"
+                                                        content={ item}/>
+                                                </ActionPanel>
+                                        }/>
                                     )
                                 })
                             }
                         </ListSection>
-                        {/*<ListSection title="">*/}
-
-                        {/*</ListSection>*/}
                         {/* subtitle="You might see the same result" */}
                         <ListSection title="Other from Web Results">
                             {
@@ -130,8 +156,9 @@ export default function () {
                                     return (
                                         <ListItem
                                             key={idx}
+                                            icon={ Icon.Text }
                                             title={ webResultItem.key }
-                                            subtitle={ webResultItem.value.join(' ; ') }
+                                            subtitle={ webResultItem.value.join('; ') }
                                             actions={
                                                 <ActionPanel>
                                                     <CopyToClipboardAction
@@ -165,6 +192,7 @@ export default function () {
                   </ActionPanel>
               }
               onSearchTextChange={ inputText => onInputChangeEvt(inputText) } isLoading={ isLoadingState }>
+            <Detail markdown={ ` ###Blold`} />
             <ListDetail/>
         </List>
     )
