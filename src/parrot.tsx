@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import axios from "axios";
+import {exec} from 'child_process'
 import {Component, Fragment, useEffect, useState} from 'react'
 import {
     ActionPanel,
@@ -9,7 +10,8 @@ import {
     Icon,
     List,
     ListItem,
-    ListSection
+    ListSection,
+    randomId
 } from '@raycast/api'
 import querystring from 'querystring'
 
@@ -48,10 +50,6 @@ class TranslateResultView extends Component<ITranslateResult> {
     }
 }
 
-class Red<ITranslateResult> {
-
-}
-
 export default function () {
     const [inputState, updateInputState] = useState<string>()
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
@@ -67,7 +65,7 @@ export default function () {
         const APP_KEY = 'MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM'
 
         const inputQueryText = inputState
-        const salt = 1039057373 // change to UUID
+        const salt = randomId() // change to UUID
         const timestamp = Math.round(new Date().getTime() / 1000)
         const sha256 = crypto.createHash('sha256')
         const sha256Content = APP_ID + inputQueryText + salt + timestamp + APP_KEY
@@ -104,6 +102,10 @@ export default function () {
         }
     }
 
+    function playTextSound(text: string) {
+        exec(`say ${text}`)
+    }
+
     function ListDetail() {
         // success
         if (translateResultState) {
@@ -116,7 +118,9 @@ export default function () {
                                 title={ translateResultState?.query }
                                 actions={
                                     <ActionPanel>
-                                        <ActionPanelItem title="🔊 Play sound" icon={ Icon.Message }/>
+                                        <ActionPanelItem
+                                            title="🔊 Play sound" icon={ Icon.Message }
+                                            onAction={ () => playTextSound(translateResultState?.query) }/>
                                     </ActionPanel>
                                 }
                                 subtitle={ '( 🇺🇸 ' + translateResultState?.basic?.phonetic + ' |  🇬🇧 ' + translateResultState?.basic?.["uk-phonetic"] + ' )'   } />
