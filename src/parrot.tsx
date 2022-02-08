@@ -82,10 +82,10 @@ export default function () {
                 q: inputQueryText,
                 curtime: timestamp
             }))
-            .then( res => {
-                updateLoadingState(false)
-                updateTranslateResultState(res.data)
-            })
+                .then( res => {
+                    updateLoadingState(false)
+                    updateTranslateResultState(res.data)
+                })
         }, 1000)
     }, [inputState])
 
@@ -143,11 +143,11 @@ export default function () {
                                             key={ idx }
                                             icon={ Icon.Text }
                                             title={item} actions={
-                                                <ActionPanel>
-                                                    <CopyToClipboardAction
-                                                        title="Copy"
-                                                        content={ item}/>
-                                                </ActionPanel>
+                                            <ActionPanel>
+                                                <CopyToClipboardAction
+                                                    title="Copy"
+                                                    content={ item}/>
+                                            </ActionPanel>
                                         }/>
                                     )
                                 })
@@ -196,7 +196,6 @@ export default function () {
                   </ActionPanel>
               }
               onSearchTextChange={ inputText => onInputChangeEvt(inputText) } isLoading={ isLoadingState }>
-            <Detail markdown={ ` ###Blold`} />
             <ListDetail/>
         </List>
     )
