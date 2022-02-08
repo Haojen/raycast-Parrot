@@ -1,54 +1,20 @@
 import crypto from 'crypto'
 import axios from "axios";
 import {exec} from 'child_process'
-import {Component, Fragment, useEffect, useState} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import {
+    Icon,
+    List,
+    randomId,
+    ListItem,
+    ListSection,
     ActionPanel,
     ActionPanelItem,
     CopyToClipboardAction,
-    Detail,
-    Icon,
-    List,
-    ListItem,
-    ListSection,
-    randomId
 } from '@raycast/api'
 import querystring from 'querystring'
 
-interface ITranslateResult {
-    translation: []
-    webdict?: string
-    errorCode: string
-    web?: ITranslateResultWebItem[]
-    basic?: ITranslateResultBasicItem,
-
-    // unused
-    l: string
-    query: string
-    returnPhrase: []
-}
-
-interface ITranslateResultWebItem {
-    key: string
-    value: string[]
-}
-
-interface ITranslateResultBasicItem {
-    explains: string[]
-    phonetic?: string
-    'us-phonetic': string
-    'uk-phonetic': string
-}
-
 let delayFetchTranslateAPITimer:NodeJS.Timeout
-
-class TranslateResultView extends Component<ITranslateResult> {
-    render() {
-        return (
-            <List.Item title='red' />
-        )
-    }
-}
 
 export default function () {
     const [inputState, updateInputState] = useState<string>()
