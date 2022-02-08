@@ -114,19 +114,6 @@ export default function () {
                     <Fragment>
                         <ListSection>
                             <ListItem
-                                icon={ Icon.Star }
-                                title={ translateResultState?.query }
-                                actions={
-                                    <ActionPanel>
-                                        <ActionPanelItem
-                                            title="🔊 Play sound" icon={ Icon.Message }
-                                            onAction={ () => playTextSound(translateResultState?.query) }/>
-                                    </ActionPanel>
-                                }
-                                subtitle={ '( 🇺🇸 ' + translateResultState?.basic?.phonetic + ' |  🇬🇧 ' + translateResultState?.basic?.["uk-phonetic"] + ' )'   } />
-                        </ListSection>
-                        <ListSection title={ 'Abstract'}>
-                            <ListItem
                                 actions={
                                     <ActionPanel>
                                         <CopyToClipboardAction
@@ -135,7 +122,9 @@ export default function () {
                                     </ActionPanel>
                                 }
                                 icon={ Icon.Text }
-                                title={ translateResultState.translation.join('') }/>
+                                title={ translateResultState.translation.join('') }
+                                accessoryTitle={ translateResultState?.basic?.phonetic }
+                            />
                             {
                                 translateResultState?.basic?.explains?.map( (item, idx) => {
                                     return (
