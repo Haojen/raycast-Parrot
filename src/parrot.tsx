@@ -17,7 +17,7 @@ import querystring from 'querystring'
 
 import per from './options'
 
-per()
+// per()
 
 let delayFetchTranslateAPITimer:NodeJS.Timeout
 
@@ -71,11 +71,16 @@ export default function () {
         const APP_ID = '0d68776be7e9be0b'
         const APP_KEY = 'MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM'
 
-        const inputQueryText = inputState
+        function truncate(q: string){
+            const len = q.length
+            return len<=20 ? q : q.substring(0, 10) + len + q.substring(len-10, len)
+        }
+
         const salt = randomId()
-        const timestamp = Math.round(new Date().getTime() / 1000)
+        const inputQueryText = inputState
         const sha256 = crypto.createHash('sha256')
-        const sha256Content = APP_ID + inputQueryText + salt + timestamp + APP_KEY
+        const timestamp = Math.round(new Date().getTime() / 1000)
+        const sha256Content = APP_ID + truncate(inputQueryText) + salt + timestamp + APP_KEY
         const sign = sha256.update(sha256Content).digest('hex')
 
         delayFetchTranslateAPITimer = setTimeout(() => {

@@ -25,6 +25,36 @@
       "description": "red",
       "data": [
         {
+          "title": "Auto Detect",
+          "value": "auto"
+        },
+        {
+          "title": "🇿🇦 Afrikaans",
+          "value": "af"
+        },
+        {
+          "title": "🇦🇱 Albanian",
+          "value": "sq"
+        },
+        {
+          "title": "Amharic",
+          "value": "am"
+        }
+      ]
+    },
+    {
+      "name": "lang2",
+      "type": "dropdown",
+      "required": true,
+      "title": "Secound Language",
+      "default": "en",
+      "description": "red",
+      "data": [
+        {
+          "title": "Auto Detect",
+          "value": "auto"
+        },
+        {
           "title": "🇿🇦 Afrikaans",
           "value": "af"
         },
