@@ -67,7 +67,7 @@
       ]
     },
     {
-      "name": "appID",
+      "name": "appId",
       "type": "textfield",
       "required": true,
       "title": "App ID",

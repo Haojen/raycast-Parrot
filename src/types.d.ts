@@ -22,3 +22,10 @@ interface ITranslateResultBasicItem {
     'us-phonetic': string
     'uk-phonetic': string
 }
+
+interface Preferences {
+    lang1: string
+    lang2: string
+    appId: string
+    appKey: string
+}
