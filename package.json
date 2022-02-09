@@ -15,6 +15,30 @@
       "mode": "view"
     }
   ],
+  "preferences": [
+    {
+      "name": "lang1",
+      "type": "dropdown",
+      "required": true,
+      "title": "First Language",
+      "default": "en",
+      "description": "red",
+      "data": [
+        {
+          "title": "🇿🇦 Afrikaans",
+          "value": "af"
+        },
+        {
+          "title": "🇦🇱 Albanian",
+          "value": "sq"
+        },
+        {
+          "title": "Amharic",
+          "value": "am"
+        }
+      ]
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.27.0",
     "axios": "^0.25.0"

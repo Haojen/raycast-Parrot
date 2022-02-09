@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import axios from "axios";
 import {exec} from 'child_process'
-import {Fragment, useEffect, useState} from 'react'
+import {Component, Fragment, useEffect, useState} from 'react'
 import {
     Icon,
     List,
@@ -10,11 +10,52 @@ import {
     ListSection,
     ActionPanel,
     ActionPanelItem,
+    ActionPanelSection,
     CopyToClipboardAction,
 } from '@raycast/api'
 import querystring from 'querystring'
 
+import per from './options'
+
+per()
+
 let delayFetchTranslateAPITimer:NodeJS.Timeout
+
+
+class ListActionPanelItem extends Component {
+    constructor(props: any) {
+        super(props);
+    }
+
+    render() {
+        return <ActionPanel>
+            <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
+        </ActionPanel>
+    }
+}
+
+class ListItemActionPanelItem extends Component<any, any> {
+    public copyContent: string
+    public showPlaySoundItem: boolean
+    constructor(props: any) {
+        super(props)
+        this.copyContent = ''
+        this.showPlaySoundItem = false
+    }
+    Foo() {
+        return <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
+    }
+    render() {
+        return <ActionPanel>
+            <ActionPanelSection>
+                <CopyToClipboardAction title="Copy" content={ this.copyContent }/>
+            </ActionPanelSection>
+            <ActionPanelSection title="Language">
+                <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
+            </ActionPanelSection>
+        </ActionPanel>
+    }
+}
 
 export default function () {
     const [inputState, updateInputState] = useState<string>()
@@ -31,7 +72,7 @@ export default function () {
         const APP_KEY = 'MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM'
 
         const inputQueryText = inputState
-        const salt = randomId() // change to UUID
+        const salt = randomId()
         const timestamp = Math.round(new Date().getTime() / 1000)
         const sha256 = crypto.createHash('sha256')
         const sha256Content = APP_ID + inputQueryText + salt + timestamp + APP_KEY
@@ -48,10 +89,10 @@ export default function () {
                 q: inputQueryText,
                 curtime: timestamp
             }))
-                .then( res => {
-                    updateLoadingState(false)
-                    updateTranslateResultState(res.data)
-                })
+            .then( res => {
+                updateLoadingState(false)
+                updateTranslateResultState(res.data)
+            })
         }, 1000)
     }, [inputState])
 
@@ -80,13 +121,7 @@ export default function () {
                     <Fragment>
                         <ListSection>
                             <ListItem
-                                actions={
-                                    <ActionPanel>
-                                        <CopyToClipboardAction
-                                            title="Copy"
-                                            content={ translateResultState.translation.join(' ') }/>
-                                    </ActionPanel>
-                                }
+                                actions={ <ListItemActionPanelItem/> }
                                 icon={ Icon.Text }
                                 title={ translateResultState.translation.join('') }
                                 accessoryTitle={ translateResultState?.basic?.phonetic }
@@ -96,19 +131,14 @@ export default function () {
                                     return (
                                         <ListItem
                                             key={ idx }
+                                            title={item}
                                             icon={ Icon.Text }
-                                            title={item} actions={
-                                            <ActionPanel>
-                                                <CopyToClipboardAction
-                                                    title="Copy"
-                                                    content={ item}/>
-                                            </ActionPanel>
-                                        }/>
+                                            actions={<ListItemActionPanelItem/>}
+                                        />
                                     )
                                 })
                             }
                         </ListSection>
-                        {/* subtitle="You might see the same result" */}
                         <ListSection title="Other from Web Results">
                             {
                                 translateResultState?.web?.map( (webResultItem, idx) => {
@@ -117,14 +147,8 @@ export default function () {
                                             key={idx}
                                             icon={ Icon.Text }
                                             title={ webResultItem.key }
+                                            actions={<ListItemActionPanelItem/>}
                                             subtitle={ webResultItem.value.join('; ') }
-                                            actions={
-                                                <ActionPanel>
-                                                    <CopyToClipboardAction
-                                                        title="CopyToClipboardAction"
-                                                        content={ translateResultState.translation.join(' $ ') }/>
-                                                </ActionPanel>
-                                            }
                                         />
                                     )
                                 })
@@ -144,11 +168,7 @@ export default function () {
     return (
         <List searchBarPlaceholder={'Translate to..'}
               actions={
-                  <ActionPanel>
-                      <ActionPanelItem title="en2ch" icon={Icon.Globe}/>
-                      <ActionPanelItem title="ch2en" icon={Icon.Globe}/>
-                      <ActionPanelItem title="en2jp" icon={Icon.Globe}/>
-                  </ActionPanel>
+                  <ListActionPanelItem/>
               }
               onSearchTextChange={ inputText => onInputChangeEvt(inputText) } isLoading={ isLoadingState }>
             <ListDetail/>
