@@ -21,8 +21,7 @@
       "type": "dropdown",
       "required": true,
       "title": "First Language",
-      "default": "en",
-      "description": "red",
+      "description": "",
       "data": [
         {
           "title": "Auto Detect",
@@ -47,8 +46,7 @@
       "type": "dropdown",
       "required": true,
       "title": "Secound Language",
-      "default": "en",
-      "description": "red",
+      "description": "",
       "data": [
         {
           "title": "Auto Detect",
@@ -67,6 +65,24 @@
           "value": "am"
         }
       ]
+    },
+    {
+      "name": "appID",
+      "type": "textfield",
+      "required": true,
+      "title": "App ID",
+      "description": "",
+      "placeholder": "",
+      "default": "0d68776be7e9be0b"
+    },
+    {
+      "name": "appKey",
+      "type": "textfield",
+      "required": true,
+      "title": "App Key",
+      "placeholder": "",
+      "description": "",
+      "default": "MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM"
     }
   ],
   "dependencies": {
