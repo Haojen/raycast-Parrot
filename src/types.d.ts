@@ -23,9 +23,19 @@ interface ITranslateResultBasicItem {
     'uk-phonetic': string
 }
 
-interface Preferences {
+interface IPreferences {
     lang1: string
     lang2: string
     appId: string
     appKey: string
+}
+
+interface IListItemActionPanelItem {
+    copyText: string
+    showPlaySoundButton?: boolean
+}
+
+interface IReformatTranslateResult {
+    title: string
+    value: string
 }

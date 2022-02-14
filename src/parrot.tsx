@@ -1,7 +1,7 @@
 import axios from "axios"
 import crypto from 'crypto'
 import querystring from 'querystring'
-import {truncate} from './shared.func'
+import {reformatTranslateResult, truncate, useSymbolSegmentationArrayText} from './shared.func'
 import {Component, Fragment, useEffect, useState} from 'react'
 import {
     Icon,
@@ -31,25 +31,28 @@ class ListActionPanelItem extends Component {
     }
 }
 
-class ListItemActionPanelItem extends Component<any, any> {
-    public copyContent: string
-    public showPlaySoundItem: boolean
-    constructor(props: any) {
-        super(props)
-        this.copyContent = ''
-        this.showPlaySoundItem = false
-    }
-    Foo() {
-        return <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
-    }
+class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
     render() {
+        const SEPARATOR = '；'
+        const copyTextArray = this.props.copyText.split(SEPARATOR)
+              copyTextArray.length > 1 && copyTextArray.push(this.props.copyText)
+        const finalTextArray = reformatTranslateResult(copyTextArray)
+
         return <ActionPanel>
             <ActionPanelSection>
-                <CopyToClipboardAction title="Copy" content={ this.copyContent }/>
+                {
+                    finalTextArray.map( (textItem, key) => {
+                        return <CopyToClipboardAction
+                            title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}/>
+                    })
+                }
             </ActionPanelSection>
-            <ActionPanelSection title="Language">
-                <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
-            </ActionPanelSection>
+            {
+                this.props.showPlaySoundButton &&
+                <ActionPanelSection title="Language">
+                    <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
+                </ActionPanelSection>
+            }
         </ActionPanel>
     }
 }
@@ -59,7 +62,7 @@ export default function () {
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
     const [translateResultState, updateTranslateResultState] = useState<ITranslateResult>()
 
-    const preferences: Preferences = getPreferenceValues();
+    const preferences: IPreferences = getPreferenceValues();
 
     const salt = randomId()
     const APP_ID = preferences.appId
@@ -68,9 +71,7 @@ export default function () {
 
     useEffect(() => {
         // Prevent when mounted run
-        if (!inputState) {
-            return
-        }
+        if (!inputState) return;
 
         const timestamp = Math.round(new Date().getTime() / 1000)
         const sha256Content = APP_ID + truncate(inputState) + salt + timestamp + APP_KEY
@@ -115,11 +116,14 @@ export default function () {
                     <Fragment>
                         <ListSection>
                             <ListItem
-                                actions={ <ListItemActionPanelItem/> }
+                                actions={
+                                    <ListItemActionPanelItem
+                                        showPlaySoundButton={ !!translateResultState?.basic?.phonetic }
+                                        copyText={ useSymbolSegmentationArrayText(translateResultState.translation) }/>
+                                }
                                 icon={ Icon.Text }
-                                title={ translateResultState.translation.join('') }
                                 accessoryTitle={ translateResultState?.basic?.phonetic }
-                            />
+                                title={ useSymbolSegmentationArrayText(translateResultState.translation) }/>
                             {
                                 translateResultState?.basic?.explains?.map( (item, idx) => {
                                     return (
@@ -127,7 +131,7 @@ export default function () {
                                             key={ idx }
                                             title={item}
                                             icon={ Icon.Text }
-                                            actions={<ListItemActionPanelItem/>}
+                                            actions={<ListItemActionPanelItem copyText={ item}/>}
                                         />
                                     )
                                 })
@@ -141,8 +145,10 @@ export default function () {
                                             key={idx}
                                             icon={ Icon.Text }
                                             title={ webResultItem.key }
-                                            actions={<ListItemActionPanelItem/>}
-                                            subtitle={ webResultItem.value.join('; ') }
+                                            subtitle={ useSymbolSegmentationArrayText(webResultItem.value)}
+                                            actions={
+                                                <ListItemActionPanelItem
+                                                    copyText={ useSymbolSegmentationArrayText(webResultItem.value) }/>}
                                         />
                                     )
                                 })
