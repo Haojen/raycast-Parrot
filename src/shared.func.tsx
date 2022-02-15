@@ -9,8 +9,13 @@ export function playTextSound(text: string): void {
     exec(`say ${text}`)
 }
 
-export function reformatTranslateResult(data: string[]): IReformatTranslateResult[] {
+export function reformatTranslateResult(data: string[], limitResultAmount: number = 10): IReformatTranslateResult[] {
     const dataLength = data?.length - 1
+    let finalData:string[] = data
+    if (limitResultAmount > 0 && dataLength >= limitResultAmount) {
+        finalData = data.slice(0, limitResultAmount - 1)
+        finalData.push(data[dataLength])
+    }
 
     function truncate(string: string, length: number = 16, separator: string = '..') {
         if (string.length <= length) return string
@@ -18,9 +23,10 @@ export function reformatTranslateResult(data: string[]): IReformatTranslateResul
         return string.substring(0, length) + separator
     }
 
-    return data.map((text, idx) => {
+    const finalDataLength = finalData.length - 1
+    return finalData.map((text, idx) => {
         return {
-            title: dataLength === idx && idx > 0 ? 'All' : truncate(text),
+            title: finalDataLength === idx && idx > 0 ? 'All' : truncate(text),
             value: text
         }
     })

@@ -39,3 +39,10 @@ interface IReformatTranslateResult {
     title: string
     value: string
 }
+
+interface ILanguageListItem {
+    // id?: string
+    title: string
+    flag: string
+    value: string
+}

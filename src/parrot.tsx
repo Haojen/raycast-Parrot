@@ -6,16 +6,13 @@ import {Component, Fragment, useEffect, useState} from 'react'
 import {
     Icon,
     List,
+    Action,
+    Keyboard,
     randomId,
-    ListItem,
-    ListSection,
+    Clipboard,
     ActionPanel,
-    ActionPanelItem,
-    ActionPanelSection,
     getPreferenceValues,
-    CopyToClipboardAction,
 } from '@raycast/api'
-
 
 let delayFetchTranslateAPITimer:NodeJS.Timeout
 
@@ -26,32 +23,40 @@ class ListActionPanelItem extends Component {
 
     render() {
         return <ActionPanel>
-            <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
+            <ActionPanel.Item title="en2zh" icon={ Icon.Globe }/>
         </ActionPanel>
     }
 }
 
 class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
+    public autoPasteText: boolean = false
+    private shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
     render() {
         const SEPARATOR = '；'
         const copyTextArray = this.props.copyText.split(SEPARATOR)
               copyTextArray.length > 1 && copyTextArray.push(this.props.copyText)
-        const finalTextArray = reformatTranslateResult(copyTextArray)
+
+        const finalTextArray = reformatTranslateResult(copyTextArray, 6)
 
         return <ActionPanel>
-            <ActionPanelSection>
+            <ActionPanel.Section>
                 {
                     finalTextArray.map( (textItem, key) => {
-                        return <CopyToClipboardAction
-                            title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}/>
+                        return (
+                            <Action.CopyToClipboard
+                                onCopy={ () => this.autoPasteText && Clipboard.paste(textItem.value) }
+                                shortcut={ {modifiers: ['cmd'], key: this.shortcutKeyEquivalent[key]} }
+                                title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}
+                            />
+                        )
                     })
                 }
-            </ActionPanelSection>
+            </ActionPanel.Section>
             {
                 this.props.showPlaySoundButton &&
-                <ActionPanelSection title="Language">
-                    <ActionPanelItem title="en2zh" icon={ Icon.Globe }/>
-                </ActionPanelSection>
+                <ActionPanel.Section title="Language">
+                    <ActionPanel.Item title="en2zh" icon={ Icon.Globe }/>
+                </ActionPanel.Section>
             }
         </ActionPanel>
     }
@@ -114,8 +119,8 @@ export default function () {
             if (translateResultState.errorCode === '0') {
                 return (
                     <Fragment>
-                        <ListSection>
-                            <ListItem
+                        <List.Section>
+                            <List.Item
                                 actions={
                                     <ListItemActionPanelItem
                                         showPlaySoundButton={ !!translateResultState?.basic?.phonetic }
@@ -127,7 +132,7 @@ export default function () {
                             {
                                 translateResultState?.basic?.explains?.map( (item, idx) => {
                                     return (
-                                        <ListItem
+                                        <List.Item
                                             key={ idx }
                                             title={item}
                                             icon={ Icon.Text }
@@ -136,12 +141,12 @@ export default function () {
                                     )
                                 })
                             }
-                        </ListSection>
-                        <ListSection title="Other from Web Results">
+                        </List.Section>
+                        <List.Section title="Other from Web Results">
                             {
                                 translateResultState?.web?.map( (webResultItem, idx) => {
                                     return (
-                                        <ListItem
+                                        <List.Item
                                             key={idx}
                                             icon={ Icon.Text }
                                             title={ webResultItem.key }
@@ -153,12 +158,12 @@ export default function () {
                                     )
                                 })
                             }
-                        </ListSection>
+                        </List.Section>
                     </Fragment>
                 )
             }
 
-            return  <ListItem title={'Transition Error'} subtitle={translateResultState.errorCode} />
+            return  <List.Item title={'Transition Error'} subtitle={translateResultState.errorCode} />
         }
 
         // fail

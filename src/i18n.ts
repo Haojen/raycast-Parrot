@@ -7,6 +7,29 @@ export const i18nRegionList = {
     }
 }
 
+export const languageList: ILanguageListItem[] = [
+    {
+        title: 'Chinese-Simple',
+        flag: '🇨🇳',
+        value: 'zh-CHS',
+    },
+    {
+        title: 'English',
+        flag: '🇺🇸',
+        value: 'en'
+    },
+    {
+        title: 'Japanese',
+        flag: '🇯🇵',
+        value: 'jp'
+    },
+    {
+        title: 'France',
+        flag: '🇫🇷',
+        value: 'fr'
+    }
+]
+
 export const i18nFlagList = {
     us: '🇺🇸',
     uk: '🇬🇧',

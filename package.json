@@ -83,10 +83,19 @@
       "placeholder": "",
       "description": "",
       "default": "MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM"
+    },
+    {
+      "name": "keepRecentTargetLanguage",
+      "type": "checkbox",
+      "label": "on off",
+      "required": false,
+      "title": "Keep Recent Target Language",
+      "description": "Keep Recent Target Language",
+      "default": false
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.27.0",
+    "@raycast/api": "^1.28.0",
     "axios": "^0.25.0"
   },
   "devDependencies": {
