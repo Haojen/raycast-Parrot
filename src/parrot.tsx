@@ -1,180 +1,119 @@
-import axios from "axios"
-import crypto from 'crypto'
-import querystring from 'querystring'
-import {reformatTranslateResult, truncate, useSymbolSegmentationArrayText} from './shared.func'
-import {Component, Fragment, useEffect, useState} from 'react'
+import {languageList} from './i18n'
+import {ActionCopyListSection} from "./components";
+import {Component, useEffect, useState, Fragment} from 'react'
+import {reformatTranslateResult2, requestYoudaoAPI} from './shared.func'
+
 import {
     Icon,
     List,
-    Action,
-    Keyboard,
-    randomId,
-    Clipboard,
     ActionPanel,
-    getPreferenceValues,
 } from '@raycast/api'
 
 let delayFetchTranslateAPITimer:NodeJS.Timeout
 
-class ListActionPanelItem extends Component {
-    constructor(props: any) {
-        super(props);
-    }
-
-    render() {
-        return <ActionPanel>
-            <ActionPanel.Item title="en2zh" icon={ Icon.Globe }/>
-        </ActionPanel>
-    }
-}
-
 class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
-    public autoPasteText: boolean = false
-    private shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
     render() {
-        const SEPARATOR = '；'
-        const copyTextArray = this.props.copyText.split(SEPARATOR)
-              copyTextArray.length > 1 && copyTextArray.push(this.props.copyText)
-
-        const finalTextArray = reformatTranslateResult(copyTextArray, 6)
-
         return <ActionPanel>
-            <ActionPanel.Section>
+            <ActionCopyListSection copyText={ this.props.copyText }/>
+            {
+                this.props.showPlaySoundButton &&
+                <ActionPanel.Section title="Others">
+                    <ActionPanel.Item title="Play Sound" icon={ Icon.Message }/>
+                </ActionPanel.Section>
+            }
+            <ActionPanel.Section title="Language">
                 {
-                    finalTextArray.map( (textItem, key) => {
-                        return (
-                            <Action.CopyToClipboard
-                                onCopy={ () => this.autoPasteText && Clipboard.paste(textItem.value) }
-                                shortcut={ {modifiers: ['cmd'], key: this.shortcutKeyEquivalent[key]} }
-                                title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}
-                            />
-                        )
+                    languageList.map( region => {
+                        return <ActionPanel.Item
+                            key={ region.title }
+                            title={ region.title }
+                            icon={ Icon.Globe }
+                            onAction={ () => this.props.onLanguageUpdate(region.value)  }
+                        />
                     })
                 }
             </ActionPanel.Section>
-            {
-                this.props.showPlaySoundButton &&
-                <ActionPanel.Section title="Language">
-                    <ActionPanel.Item title="en2zh" icon={ Icon.Globe }/>
-                </ActionPanel.Section>
-            }
         </ActionPanel>
     }
 }
+
+let fetchResultStateCode: string = '-1'
 
 export default function () {
     const [inputState, updateInputState] = useState<string>()
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
-    const [translateResultState, updateTranslateResultState] = useState<ITranslateResult>()
+    // TODO: get from config
+    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<string>('zh-CHS')
+    const [translateResultState, updateTranslateResultState] = useState<ITranslateReformatResult[]>()
 
-    const preferences: IPreferences = getPreferenceValues();
-
-    const salt = randomId()
-    const APP_ID = preferences.appId
-    const APP_KEY = preferences.appKey
-    const sha256 = crypto.createHash('sha256')
 
     useEffect(() => {
         // Prevent when mounted run
         if (!inputState) return;
 
-        const timestamp = Math.round(new Date().getTime() / 1000)
-        const sha256Content = APP_ID + truncate(inputState) + salt + timestamp + APP_KEY
-        const sign = sha256.update(sha256Content).digest('hex')
-
         delayFetchTranslateAPITimer = setTimeout(() => {
-            axios.post('https://openapi.youdao.com/api', querystring.stringify({
-                sign,
-                salt,
-                from: 'auto',
-                to: 'zh-CHS',
-                signType: 'v3',
-                q: inputState,
-                appKey: APP_ID,
-                curtime: timestamp
-            }))
-            .then( res => {
+            requestYoudaoAPI(inputState, translateTargetLanguage).then( res => {
                 updateLoadingState(false)
-                updateTranslateResultState(res.data)
+                fetchResultStateCode = res.data.errorCode
+                updateTranslateResultState(reformatTranslateResult2(res.data))
             })
-        }, 1000)
-    }, [inputState])
+        }, 800)
+    }, [inputState, translateTargetLanguage])
 
     function onInputChangeEvt(inputText:string) {
         clearTimeout(delayFetchTranslateAPITimer)
 
         if (inputText.trim().length > 0) {
-            updateLoadingState(true)
             updateInputState(inputText)
+            updateLoadingState(true)
+            return
         }
-        else {
-            updateTranslateResultState(undefined)
-            updateLoadingState(false)
-        }
+
+        updateLoadingState(false)
+        updateTranslateResultState([])
     }
 
-    function ListDetail() {
-        // success
-        if (translateResultState) {
-            if (translateResultState.errorCode === '0') {
-                return (
-                    <Fragment>
-                        <List.Section>
-                            <List.Item
-                                actions={
-                                    <ListItemActionPanelItem
-                                        showPlaySoundButton={ !!translateResultState?.basic?.phonetic }
-                                        copyText={ useSymbolSegmentationArrayText(translateResultState.translation) }/>
-                                }
-                                icon={ Icon.Text }
-                                accessoryTitle={ translateResultState?.basic?.phonetic }
-                                title={ useSymbolSegmentationArrayText(translateResultState.translation) }/>
+    function ListDetail()  {
+        if (fetchResultStateCode === '-1') return null
+
+        if (fetchResultStateCode === '0') {
+            return <Fragment>
+                {
+                    translateResultState!.map( (result, idx) => {
+                        return <List.Section key={ idx } title={result.type}>
                             {
-                                translateResultState?.basic?.explains?.map( (item, idx) => {
+                                result.children?.map( item => {
                                     return (
                                         <List.Item
-                                            key={ idx }
-                                            title={item}
+                                            key={ item.key }
                                             icon={ Icon.Text }
-                                            actions={<ListItemActionPanelItem copyText={ item}/>}
-                                        />
-                                    )
-                                })
-                            }
-                        </List.Section>
-                        <List.Section title="Other from Web Results">
-                            {
-                                translateResultState?.web?.map( (webResultItem, idx) => {
-                                    return (
-                                        <List.Item
-                                            key={idx}
-                                            icon={ Icon.Text }
-                                            title={ webResultItem.key }
-                                            subtitle={ useSymbolSegmentationArrayText(webResultItem.value)}
+                                            title={ item.title}
+                                            subtitle={ item.content }
+                                            accessoryTitle={ item.phonetic }
                                             actions={
                                                 <ListItemActionPanelItem
-                                                    copyText={ useSymbolSegmentationArrayText(webResultItem.value) }/>}
-                                        />
+                                                    copyText={ item.content }
+                                                    showPlaySoundButton={ !!item.phonetic }
+                                                    onLanguageUpdate={ updateTranslateTargetLanguage}
+                                                />
+                                            }/>
                                     )
                                 })
                             }
                         </List.Section>
-                    </Fragment>
-                )
-            }
-
-            return  <List.Item title={'Transition Error'} subtitle={translateResultState.errorCode} />
+                    })
+                }
+            </Fragment>
         }
 
-        // fail
-        return null
+        return  <List.Item title={'Transition Error'} subtitle={ fetchResultStateCode } />
     }
 
     return (
         <List searchBarPlaceholder={'Translate to..'}
               isLoading={ isLoadingState }
-              actions={ <ListActionPanelItem/> }
-              onSearchTextChange={ inputText => onInputChangeEvt(inputText) }>
+              onSearchTextChange={ inputText => onInputChangeEvt(inputText) }
+              actions={ <ListItemActionPanelItem onLanguageUpdate={ updateTranslateTargetLanguage }/> }>
             <ListDetail/>
         </List>
     )

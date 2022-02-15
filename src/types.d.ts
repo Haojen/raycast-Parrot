@@ -1,7 +1,7 @@
 interface ITranslateResult {
-    translation: []
     webdict?: string
     errorCode: string
+    translation: string[]
     web?: ITranslateResultWebItem[]
     basic?: ITranslateResultBasicItem,
 
@@ -9,6 +9,16 @@ interface ITranslateResult {
     l: string
     query: string
     returnPhrase: []
+}
+
+interface ITranslateReformatResult {
+    type?: string,
+    children?: {
+        key: string
+        phonetic?: string
+        title: string
+        content: string
+    }[]
 }
 
 interface ITranslateResultWebItem {
@@ -31,8 +41,9 @@ interface IPreferences {
 }
 
 interface IListItemActionPanelItem {
-    copyText: string
+    copyText?: string
     showPlaySoundButton?: boolean
+    onLanguageUpdate: (language: string) => void
 }
 
 interface IReformatTranslateResult {
@@ -45,4 +56,9 @@ interface ILanguageListItem {
     title: string
     flag: string
     value: string
+}
+
+interface IActionCopyListSection {
+    copyText?: string
+    autoPasteText?: string
 }
