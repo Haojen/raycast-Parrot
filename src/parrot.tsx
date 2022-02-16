@@ -1,4 +1,4 @@
-import { Icon, List, } from '@raycast/api'
+import {getPreferenceValues, Icon, List,} from '@raycast/api'
 import {useEffect, useState, Fragment} from 'react'
 import {ListItemActionPanelItem} from "./components"
 import {reformatTranslateResult2, requestYoudaoAPI} from './shared.func'
@@ -10,8 +10,14 @@ export default function () {
     const [inputState, updateInputState] = useState<string>()
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
 
+    const preferences: IPreferences = getPreferenceValues();
+
     // TODO: get from config
-    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<string>('zh-CHS')
+    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<ILanguageListItem>({
+        flag: '',
+        title: preferences.lang1,
+        value: preferences.lang1,
+    })
     const [translateResultState, updateTranslateResultState] = useState<ITranslateReformatResult[]>()
 
 
@@ -19,7 +25,31 @@ export default function () {
         if (!inputState) return // Prevent when mounted run
 
         delayFetchTranslateAPITimer = setTimeout(() => {
-            requestYoudaoAPI(inputState, translateTargetLanguage).then( res => {
+            requestYoudaoAPI(inputState, translateTargetLanguage.value).then(res => {
+                const resData:ITranslateResult = res.data
+
+                const [a, b] = resData.l.split('2') // en2zh 2 is split symbol
+
+                if (a === b) {
+                    if (a === preferences.lang1) {
+                        updateTranslateTargetLanguage({
+                            title: preferences.lang2,
+                            value: preferences.lang2,
+                            flag: ''
+                        })
+                        return
+                    }
+
+                    if (a === preferences.lang2) {
+                        updateTranslateTargetLanguage({
+                            title: preferences.lang1,
+                            value: preferences.lang1,
+                            flag: ''
+                        })
+                        return
+                    }
+                }
+
                 updateLoadingState(false)
                 fetchResultStateCode = res.data.errorCode
                 updateTranslateResultState(reformatTranslateResult2(res.data))
@@ -73,6 +103,7 @@ export default function () {
             </Fragment>
         }
 
+        // TODO: Try use Detail
         return  <List.Item title={'Transition Error'} subtitle={ fetchResultStateCode } />
     }
 
@@ -80,8 +111,8 @@ export default function () {
         <List
             isLoading={ isLoadingState }
             searchBarPlaceholder={'Translate to..'}
-            navigationTitle={ 'Parrot Chinese to English'}
             onSearchTextChange={ inputText => onInputChangeEvt(inputText) }
+            navigationTitle={ `Parrot ${ preferences.lang1  } to ${ translateTargetLanguage.flag } ${ translateTargetLanguage.title }`}
             actions={ <ListItemActionPanelItem onLanguageUpdate={ updateTranslateTargetLanguage }/> }
         >
             <ListDetail/>

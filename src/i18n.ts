@@ -21,22 +21,19 @@ export const languageList: ILanguageListItem[] = [
     {
         title: 'Japanese',
         flag: '🇯🇵',
-        value: 'jp'
+        value: 'ja'
     },
     {
         title: 'France',
         flag: '🇫🇷',
         value: 'fr'
-    }
+    },
+    {
+        title: 'Spanish',
+        flag: '🇪🇸',
+        value: 'es'
+    },
 ]
-
-export const i18nFlagList = {
-    us: '🇺🇸',
-    uk: '🇬🇧',
-    ch: '🇨🇳',
-    jp: '🇯🇵',
-    yue: '🇭🇰'
-}
 //
 // 中文	zh-CHS
 // 英文	en

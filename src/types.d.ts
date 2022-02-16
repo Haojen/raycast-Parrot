@@ -13,12 +13,14 @@ interface ITranslateResult {
 
 interface ITranslateReformatResult {
     type?: string,
-    children?: {
-        key: string
-        phonetic?: string
-        title: string
-        content: string
-    }[]
+    children?: ITranslateReformatResultItem[]
+}
+
+interface ITranslateReformatResultItem {
+    key: string
+    phonetic?: string
+    title: string
+    content: string
 }
 
 interface ITranslateResultWebItem {
@@ -43,7 +45,7 @@ interface IPreferences {
 interface IListItemActionPanelItem {
     copyText?: string
     showPlaySoundButton?: boolean
-    onLanguageUpdate: (language: string) => void
+    onLanguageUpdate: (language: ILanguageListItem) => void
 }
 
 interface IReformatTranslateResult {
@@ -52,7 +54,6 @@ interface IReformatTranslateResult {
 }
 
 interface ILanguageListItem {
-    // id?: string
     title: string
     flag: string
     value: string
