@@ -32,6 +32,10 @@
           "value": "en"
         },
         {
+          "title": "Chinise",
+          "value": "zh-CHS"
+        },
+        {
           "title": "🇿🇦 Afrikaans",
           "value": "af"
         },
@@ -55,6 +59,14 @@
         {
           "title": "Auto Detect",
           "value": "auto"
+        },
+        {
+          "title": "English",
+          "value": "en"
+        },
+        {
+          "title": "Chinise",
+          "value": "zh-CHS"
         },
         {
           "title": "🇿🇦 Afrikaans",

@@ -20,7 +20,7 @@ interface ITranslateReformatResultItem {
     key: string
     phonetic?: string
     title: string
-    content: string
+    subtitle?: string
 }
 
 interface ITranslateResultWebItem {

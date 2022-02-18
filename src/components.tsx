@@ -1,6 +1,6 @@
 import {Component} from "react";
 import {languageList} from "./i18n";
-import {reformatTranslateResult} from "./shared.func";
+import {reformatCopyTextArray} from "./shared.func";
 import {Action, ActionPanel, Clipboard, Icon, Keyboard} from "@raycast/api";
 
 export function ActionCopyListSection(props: IActionCopyListSection) {
@@ -13,7 +13,7 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
     const SEPARATOR = '；'
     const copyTextArray = props.copyText.split(SEPARATOR)
     copyTextArray.length > 1 && copyTextArray.push(props.copyText)
-    const finalTextArray = reformatTranslateResult(copyTextArray, 4)
+    const finalTextArray = reformatCopyTextArray(copyTextArray, 4)
 
     const shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 

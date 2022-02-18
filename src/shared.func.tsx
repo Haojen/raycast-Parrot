@@ -3,6 +3,7 @@ import axios from "axios";
 import querystring from "querystring";
 import crypto from "crypto";
 import {getPreferenceValues} from "@raycast/api";
+import { languageList } from './i18n'
 
 export function truncate(q: string): string{
     const len = q.length
@@ -13,7 +14,21 @@ export function playTextSound(text: string): void {
     exec(`say ${text}`)
 }
 
-export function reformatTranslateResult(data: string[], limitResultAmount: number = 10): IReformatTranslateResult[] {
+export function getItemFromLanguageList(value: string): ILanguageListItem{
+    for (let langItem of languageList) {
+        if (langItem.value === value) {
+            return langItem
+        }
+    }
+
+    return {
+        flag: '',
+        title: '',
+        value: ''
+    }
+}
+
+export function reformatCopyTextArray(data: string[], limitResultAmount: number = 10): IReformatTranslateResult[] {
     const dataLength = data?.length - 1
     let finalData:string[] = data
     if (limitResultAmount > 0 && dataLength >= limitResultAmount) {
@@ -21,6 +36,7 @@ export function reformatTranslateResult(data: string[], limitResultAmount: numbe
         finalData.push(data[dataLength])
     }
 
+    // if title text too long
     function truncate(string: string, length: number = 16, separator: string = '..') {
         if (string.length <= length) return string
 
@@ -36,27 +52,22 @@ export function reformatTranslateResult(data: string[], limitResultAmount: numbe
     })
 }
 
-export function reformatTranslateResult2(data: ITranslateResult): ITranslateReformatResult[] {
+export function reformatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
     const reformatData:ITranslateReformatResult[] = []
 
     reformatData.push({
-        children: data.translation.map((text, idx) => {
+        children: data.translation?.map((text, idx) => {
             return {
-                phonetic: data.basic?.phonetic,
                 title: text,
-                content: text,
-                key: text + idx
+                key: text + idx,
+                phonetic: data.basic?.phonetic
             }
         })
     })
 
     reformatData.push({
         children: data.basic?.explains?.map((text, idx) => {
-            return {
-                title: text,
-                content: text,
-                key: text + idx
-            }
+            return { title: text, key: text + idx }
         })
     })
 
@@ -64,9 +75,9 @@ export function reformatTranslateResult2(data: ITranslateResult): ITranslateRefo
         type: 'Other from Web Results',
         children: data.web?.map((webResultItem, idx) => {
             return {
-                key: webResultItem.key + idx,
                 title: webResultItem.key,
-                content: useSymbolSegmentationArrayText(webResultItem.value)
+                key: webResultItem.key + idx,
+                subtitle: useSymbolSegmentationArrayText(webResultItem.value)
             }
         })
     })
