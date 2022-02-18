@@ -68,6 +68,7 @@ export default function () {
                                                     copyText={ item?.subtitle || item.title }
                                                     showPlaySoundButton={ !!item.phonetic }
                                                     onLanguageUpdate={ updateTranslateTargetLanguage}
+                                                    currentTargetLanguage={ currentTargetLanguageState }
                                                 />
                                             }/>
                                     )
@@ -100,11 +101,10 @@ export default function () {
             isLoading={ isLoadingState }
             searchBarPlaceholder={'Translate to..'}
             onSearchTextChange={ inputText => onInputChangeEvt(inputText) }
-            navigationTitle={
-                translateFromLanguageState?.title && currentTargetLanguageState?.title ?
+            navigationTitle={ translateFromLanguageState?.title && currentTargetLanguageState?.title ?
                 `Parrot: ${translateFromLanguageState.title} → ${currentTargetLanguageState.title}` : 'Parrot' }
-            actions={ <ListItemActionPanelItem onLanguageUpdate={ updateTranslateTargetLanguage }/> }
-        >
+            actions={ <ListItemActionPanelItem currentTargetLanguage={ currentTargetLanguageState }  onLanguageUpdate={ updateTranslateTargetLanguage }/> }>
+
             <ListDetail/>
         </List>
     )

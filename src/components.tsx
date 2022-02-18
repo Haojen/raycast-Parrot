@@ -47,8 +47,9 @@ export class ListItemActionPanelItem extends Component<IListItemActionPanelItem>
                     languageList.map( region => {
                         return <ActionPanel.Item
                             key={ region.title }
-                            title={ region.flag + ' ' + region.title }
-                            onAction={ () => this.props.onLanguageUpdate(region)  }
+                            title={ region.title }
+                            onAction={ () => this.props.onLanguageUpdate(region) }
+                            icon={ this.props.currentTargetLanguage?.value === region.value ? Icon.ArrowRight : Icon.Globe}
                         />
                     })
                 }

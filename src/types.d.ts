@@ -45,6 +45,7 @@ interface IPreferences {
 interface IListItemActionPanelItem {
     copyText?: string
     showPlaySoundButton?: boolean
+    currentTargetLanguage?: ILanguageListItem
     onLanguageUpdate: (language: ILanguageListItem) => void
 }
 
