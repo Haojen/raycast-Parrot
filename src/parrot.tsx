@@ -42,7 +42,7 @@ export default function () {
                 updateTranslateFromLanguageState(getItemFromLanguageList(a))
                 updateCurrentTargetLanguageState(getItemFromLanguageList(b))
             })
-        }, 800)
+        }, 900)
     }, [inputState, translateTargetLanguage])
 
 
@@ -65,8 +65,9 @@ export default function () {
                                             accessoryTitle={ item.phonetic }
                                             actions={
                                                 <ListItemActionPanelItem
+                                                    queryText={ inputState }
                                                     copyText={ item?.subtitle || item.title }
-                                                    showPlaySoundButton={ !!item.phonetic }
+                                                    currentFromLanguage={ translateFromLanguageState }
                                                     onLanguageUpdate={ updateTranslateTargetLanguage}
                                                     currentTargetLanguage={ currentTargetLanguageState }
                                                 />
@@ -103,8 +104,12 @@ export default function () {
             onSearchTextChange={ inputText => onInputChangeEvt(inputText) }
             navigationTitle={ translateFromLanguageState?.title && currentTargetLanguageState?.title ?
                 `Parrot: ${translateFromLanguageState.title} → ${currentTargetLanguageState.title}` : 'Parrot' }
-            actions={ <ListItemActionPanelItem currentTargetLanguage={ currentTargetLanguageState }  onLanguageUpdate={ updateTranslateTargetLanguage }/> }>
-
+            actions={
+                <ListItemActionPanelItem
+                    queryText={ inputState }
+                    currentFromLanguage={ translateFromLanguageState }
+                    currentTargetLanguage={ currentTargetLanguageState }
+                    onLanguageUpdate={ updateTranslateTargetLanguage }/> }>
             <ListDetail/>
         </List>
     )

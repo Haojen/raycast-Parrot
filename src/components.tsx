@@ -1,14 +1,15 @@
 import {Component} from "react";
-import {languageList} from "./i18n";
-import {reformatCopyTextArray} from "./shared.func";
-import {Action, ActionPanel, Clipboard, Icon, Keyboard, open, getDefaultApplication} from "@raycast/api";
+import {exec} from "child_process";
+import {languageList, sayLanguageList} from "./i18n";
+import {reformatCopyTextArray, truncate} from "./shared.func";
+import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard } from "@raycast/api";
+
+const preferences: IPreferences = getPreferenceValues();
 
 export function ActionCopyListSection(props: IActionCopyListSection) {
     if (!props.copyText) {
         return null
     }
-
-    let autoPasteText = false
 
     const SEPARATOR = '；'
     const copyTextArray = props.copyText.split(SEPARATOR)
@@ -22,7 +23,7 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
             finalTextArray.map( (textItem, key) => {
                 return (
                     <Action.CopyToClipboard
-                        onCopy={ () => autoPasteText && Clipboard.paste(textItem.value) }
+                        onCopy={ () => preferences.isAutomaticPaste && Clipboard.paste(textItem.value) }
                         shortcut={ {modifiers: ['cmd'], key: shortcutKeyEquivalent[key]} }
                         title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}
                     />
@@ -33,12 +34,33 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
 }
 
 export class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
-    onFeedback() {
-        open('https://github.com/Haojen/raycast-Parrot')
+    onPlaySound(text?:string, language?: string) {
+        if (language && text) {
+            const voiceIndex = 0
+            const lang = sayLanguageList[language].voice[voiceIndex]
+
+            exec(`say -v ${lang} ${ truncate(text) }`)
+        }
     }
+
     render() {
+        const playSoundIcon = Icon.Message
         return <ActionPanel>
             <ActionCopyListSection copyText={ this.props.copyText }/>
+            {
+                (this.props.currentFromLanguage ||
+                    this.props.currentTargetLanguage ) &&
+                <ActionPanel.Section title="Play Sound">
+                    <ActionPanel.Item
+                        title="Play Input Text Sound"
+                        icon={ playSoundIcon }
+                        onAction={ () => this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.value) } />
+                    <ActionPanel.Item
+                        title="Play Result Sound"
+                        icon={ playSoundIcon }
+                        onAction={ () => this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.value) }/>
+                </ActionPanel.Section>
+            }
             <ActionPanel.Section title="Language">
                 {
                     languageList.map( region => {
@@ -51,12 +73,8 @@ export class ListItemActionPanelItem extends Component<IListItemActionPanelItem>
                     })
                 }
             </ActionPanel.Section>
-            <ActionPanel.Section title="Other">
-                {
-                    this.props.showPlaySoundButton &&
-                    <ActionPanel.Item title="Play Sound" icon={ Icon.Message }/>
-                }
-                <ActionPanel.Item title="Feedback" icon={ Icon.Person } onAction={ () => this.onFeedback() }></ActionPanel.Item>
+            <ActionPanel.Section title="Others">
+                <Action.OpenInBrowser icon={ Icon.Person } title="Feedback" url="https://github.com/Haojen/raycast-Parrot" />
             </ActionPanel.Section>
         </ActionPanel>
     }

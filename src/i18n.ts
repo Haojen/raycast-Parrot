@@ -34,6 +34,18 @@ export const languageList: ILanguageListItem[] = [
         value: 'es'
     },
 ]
+
+export const sayLanguageList:ISayLanguageList = {
+    en: {
+        language: ['en_US', 'en_GB', 'en_AU', 'en_IE', 'en_IN', 'en_ZA', 'en_IN'],
+        voice: ['Alex', 'Fred', 'Samantha', 'Victoria', 'Daniel','Karen', 'Moira', 'Rishi', 'Tessa', 'Veena']
+    },
+    'zh-CHS': {
+        language: ['zh_CN', 'zh_TW', 'zh_HK'],
+        voice: ['Ting-Ting', 'Mei-Jia', 'Sin-ji']
+    }
+}
+
 //
 // 中文	zh-CHS
 // 英文	en

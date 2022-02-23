@@ -5,13 +5,10 @@ import crypto from "crypto";
 import {getPreferenceValues} from "@raycast/api";
 import { languageList } from './i18n'
 
-export function truncate(q: string): string{
-    const len = q.length
-    return len<=20 ? q : q.substring(0, 10) + len + q.substring(len-10, len)
-}
+export function truncate(string: string, length: number = 16, separator: string = '..') {
+    if (string.length <= length) return string
 
-export function playTextSound(text: string): void {
-    exec(`say ${text}`)
+    return string.substring(0, length) + separator
 }
 
 export function getItemFromLanguageList(value: string): ILanguageListItem{
@@ -34,13 +31,6 @@ export function reformatCopyTextArray(data: string[], limitResultAmount: number 
     if (limitResultAmount > 0 && dataLength >= limitResultAmount) {
         finalData = data.slice(0, limitResultAmount - 1)
         finalData.push(data[dataLength])
-    }
-
-    // if title text too long
-    function truncate(string: string, length: number = 16, separator: string = '..') {
-        if (string.length <= length) return string
-
-        return string.substring(0, length) + separator
     }
 
     const finalDataLength = finalData.length - 1
@@ -87,6 +77,11 @@ export function reformatTranslateResult(data: ITranslateResult): ITranslateRefor
 
 // API Document https://ai.youdao.com/DOCSIRMA/html/自然语言翻译/API文档/文本翻译服务/文本翻译服务-API文档.html
 export function requestYoudaoAPI(queryText: string, translateTargetLanguage: string): Promise<any> {
+    function truncate(q: string): string{
+        const len = q.length
+        return len<=20 ? q : q.substring(0, 10) + len + q.substring(len-10, len)
+    }
+
     const preferences: IPreferences = getPreferenceValues();
     const APP_ID = preferences.appId
     const APP_KEY = preferences.appKey

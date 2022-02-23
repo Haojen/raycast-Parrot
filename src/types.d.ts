@@ -40,13 +40,22 @@ interface IPreferences {
     lang2: string
     appId: string
     appKey: string
+    isAutomaticPaste: boolean
 }
 
 interface IListItemActionPanelItem {
     copyText?: string
-    showPlaySoundButton?: boolean
+    queryText?: string
+    currentFromLanguage?: ILanguageListItem
     currentTargetLanguage?: ILanguageListItem
     onLanguageUpdate: (language: ILanguageListItem) => void
+}
+
+interface ISayLanguageList {
+    [key: string]: {
+        voice: string[]
+        language: string[]
+    }
 }
 
 interface IReformatTranslateResult {

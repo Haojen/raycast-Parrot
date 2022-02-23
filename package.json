@@ -110,7 +110,7 @@
       "default": false
     },
     {
-      "name": "automaticPaste",
+      "name": "isAutomaticPaste",
       "type": "checkbox",
       "label": "Automatic Paste",
       "required": false,
