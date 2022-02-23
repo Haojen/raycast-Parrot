@@ -1,7 +1,7 @@
 import {Component} from "react";
 import {languageList} from "./i18n";
 import {reformatCopyTextArray} from "./shared.func";
-import {Action, ActionPanel, Clipboard, Icon, Keyboard} from "@raycast/api";
+import {Action, ActionPanel, Clipboard, Icon, Keyboard, open, getDefaultApplication} from "@raycast/api";
 
 export function ActionCopyListSection(props: IActionCopyListSection) {
     if (!props.copyText) {
@@ -33,15 +33,12 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
 }
 
 export class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
+    onFeedback() {
+        open('https://github.com/Haojen/raycast-Parrot')
+    }
     render() {
         return <ActionPanel>
             <ActionCopyListSection copyText={ this.props.copyText }/>
-            {
-                this.props.showPlaySoundButton &&
-                <ActionPanel.Section title="Others">
-                    <ActionPanel.Item title="Play Sound" icon={ Icon.Message }/>
-                </ActionPanel.Section>
-            }
             <ActionPanel.Section title="Language">
                 {
                     languageList.map( region => {
@@ -53,6 +50,13 @@ export class ListItemActionPanelItem extends Component<IListItemActionPanelItem>
                         />
                     })
                 }
+            </ActionPanel.Section>
+            <ActionPanel.Section title="Other">
+                {
+                    this.props.showPlaySoundButton &&
+                    <ActionPanel.Item title="Play Sound" icon={ Icon.Message }/>
+                }
+                <ActionPanel.Item title="Feedback" icon={ Icon.Person } onAction={ () => this.onFeedback() }></ActionPanel.Item>
             </ActionPanel.Section>
         </ActionPanel>
     }
