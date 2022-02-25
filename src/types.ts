@@ -1,4 +1,6 @@
-interface ITranslateResult {
+import { COPY_TYPE } from "./consts";
+
+export interface ITranslateResult {
     webdict?: string
     errorCode: string
     translation: string[]
@@ -11,31 +13,31 @@ interface ITranslateResult {
     returnPhrase: []
 }
 
-interface ITranslateReformatResult {
+export interface ITranslateReformatResult {
     type?: string,
     children?: ITranslateReformatResultItem[]
 }
 
-interface ITranslateReformatResultItem {
+export interface ITranslateReformatResultItem {
     key: string
     phonetic?: string
     title: string
     subtitle?: string
 }
 
-interface ITranslateResultWebItem {
+export interface ITranslateResultWebItem {
     key: string
     value: string[]
 }
 
-interface ITranslateResultBasicItem {
+export interface ITranslateResultBasicItem {
     explains: string[]
     phonetic?: string
     'us-phonetic': string
     'uk-phonetic': string
 }
 
-interface IPreferences {
+export interface IPreferences {
     lang1: string
     lang2: string
     appId: string
@@ -43,33 +45,35 @@ interface IPreferences {
     isAutomaticPaste: boolean
 }
 
-interface IListItemActionPanelItem {
+export interface IListItemActionPanelItem {
     copyText?: string
     queryText?: string
+    copyMode: COPY_TYPE
     currentFromLanguage?: ILanguageListItem
     currentTargetLanguage?: ILanguageListItem
     onLanguageUpdate: (language: ILanguageListItem) => void
 }
 
-interface ISayLanguageList {
+export interface ISayLanguageList {
     [key: string]: {
         voice: string[]
         language: string[]
     }
 }
 
-interface IReformatTranslateResult {
+export interface IReformatTranslateResult {
     title: string
     value: string
 }
 
-interface ILanguageListItem {
+export interface ILanguageListItem {
     title: string
     flag: string
     value: string
 }
 
-interface IActionCopyListSection {
+export interface IActionCopyListSection {
     copyText?: string
+    copyMode: COPY_TYPE
     autoPasteText?: string
 }

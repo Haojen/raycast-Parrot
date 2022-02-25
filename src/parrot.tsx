@@ -1,7 +1,15 @@
-import {useEffect, useState, Fragment} from 'react'
-import {ListItemActionPanelItem} from "./components"
+import {COPY_TYPE} from "./consts";
+import {ListActionPanel} from "./components"
+import {Fragment, useEffect, useState} from 'react'
 import {getPreferenceValues, Icon, List,} from '@raycast/api'
-import {getItemFromLanguageList, reformatTranslateResult, requestYoudaoAPI} from './shared.func'
+import {ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult} from './types'
+import {
+    requestYoudaoAPI,
+    getItemFromLanguageList,
+    reformatTranslateResult,
+    detectIsUppercaseCopyOrLowerCaseCopy, removeDetectCopyModeSymbol
+} from './shared.func'
+
 
 let fetchResultStateCode: string = '-1'
 let delayFetchTranslateAPITimer:NodeJS.Timeout
@@ -19,6 +27,8 @@ export default function () {
 
     const [translateFromLanguageState, updateTranslateFromLanguageState] = useState<ILanguageListItem>()
     const [currentTargetLanguageState, updateCurrentTargetLanguageState] = useState<ILanguageListItem>()
+
+    const [copyModeState, updateCopyModeState] = useState<COPY_TYPE>(COPY_TYPE.Normal)
 
     useEffect(() => {
         if (!inputState) return // Prevent when mounted run
@@ -64,8 +74,9 @@ export default function () {
                                             subtitle={ item?.subtitle }
                                             accessoryTitle={ item.phonetic }
                                             actions={
-                                                <ListItemActionPanelItem
+                                                <ListActionPanel
                                                     queryText={ inputState }
+                                                    copyMode={ copyModeState }
                                                     copyText={ item?.subtitle || item.title }
                                                     currentFromLanguage={ translateFromLanguageState }
                                                     onLanguageUpdate={ updateTranslateTargetLanguage}
@@ -84,12 +95,21 @@ export default function () {
         // TODO: Try use Detail
         return  <List.Item title={'Transition Error'} subtitle={ fetchResultStateCode } />
     }
-    function onInputChangeEvt(inputText:string) {
+    function onInputChangeEvt(queryText:string) {
         clearTimeout(delayFetchTranslateAPITimer)
 
-        if (inputText.trim().length > 0) {
-            updateInputState(inputText)
-            updateLoadingState(true)
+        const text = queryText.trim()
+        if (text.length > 0) {
+            updateCopyModeState(() => {
+                const freshCopyModeState = detectIsUppercaseCopyOrLowerCaseCopy(text)
+
+                const freshInputValue = removeDetectCopyModeSymbol(text, freshCopyModeState)
+                updateLoadingState(freshInputValue !== inputState)
+                updateInputState(freshInputValue)
+
+                return freshCopyModeState
+            })
+
             return
         }
 
@@ -105,8 +125,9 @@ export default function () {
             navigationTitle={ translateFromLanguageState?.title && currentTargetLanguageState?.title ?
                 `Parrot: ${translateFromLanguageState.title} → ${currentTargetLanguageState.title}` : 'Parrot' }
             actions={
-                <ListItemActionPanelItem
+                <ListActionPanel
                     queryText={ inputState }
+                    copyMode={ copyModeState }
                     currentFromLanguage={ translateFromLanguageState }
                     currentTargetLanguage={ currentTargetLanguageState }
                     onLanguageUpdate={ updateTranslateTargetLanguage }/> }>

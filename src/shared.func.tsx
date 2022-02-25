@@ -1,9 +1,18 @@
-import {exec} from "child_process";
 import axios from "axios";
-import querystring from "querystring";
 import crypto from "crypto";
-import {getPreferenceValues} from "@raycast/api";
-import { languageList } from './i18n'
+import {languageList} from "./i18n"
+import {COPY_TYPE} from "./consts"
+import querystring from "querystring"
+import {getPreferenceValues} from "@raycast/api"
+
+import {
+    ILanguageListItem,
+    IPreferences,
+    IReformatTranslateResult,
+    ITranslateReformatResult,
+    ITranslateResult
+} from "./types";
+
 
 export function truncate(string: string, length: number = 16, separator: string = '..') {
     if (string.length <= length) return string
@@ -104,8 +113,28 @@ export function requestYoudaoAPI(queryText: string, translateTargetLanguage: str
     }))
 }
 
-// TODO： 设置默认拷贝驼峰方式
-// TODO: 设置默认是否自动粘贴到 focus input text
+export function detectIsUppercaseCopyOrLowerCaseCopy(queryText: string = ''): COPY_TYPE {
+    const isFirstRightArrow = queryText[0] === '>'
+    const isSecondRightArrow = queryText[1] === '>'
+
+    if (isFirstRightArrow && isSecondRightArrow) return COPY_TYPE.Uppercase
+
+    if (isFirstRightArrow) return COPY_TYPE.LowercaseCamelCase
+
+    return COPY_TYPE.Normal
+}
+
+export function removeDetectCopyModeSymbol(queryText: string, copyMode: COPY_TYPE): string {
+    if (copyMode === COPY_TYPE.LowercaseCamelCase) {
+        return queryText.substring(1, queryText.length).trim()
+    }
+    if (copyMode === COPY_TYPE.Uppercase) {
+        return queryText.substring(2, queryText.length).trim()
+    }
+
+    return queryText
+}
+
 export function useSymbolSegmentationArrayText(textArray: string[]): string {
     return textArray.join('；')
 }

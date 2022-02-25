@@ -3,6 +3,7 @@ import {exec} from "child_process";
 import {languageList, sayLanguageList} from "./i18n";
 import {reformatCopyTextArray, truncate} from "./shared.func";
 import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard } from "@raycast/api";
+import {IActionCopyListSection, IListItemActionPanelItem, IPreferences} from "./types";
 
 const preferences: IPreferences = getPreferenceValues();
 
@@ -25,7 +26,7 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
                     <Action.CopyToClipboard
                         onCopy={ () => preferences.isAutomaticPaste && Clipboard.paste(textItem.value) }
                         shortcut={ {modifiers: ['cmd'], key: shortcutKeyEquivalent[key]} }
-                        title={ `Copy ${ textItem.title }`} content={ textItem.value } key={key}
+                        title={ `Copy ${props.copyMode} ${ textItem.title }`} content={ textItem.value } key={key}
                     />
                 )
             })
@@ -33,7 +34,7 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
     </ActionPanel.Section>
 }
 
-export class ListItemActionPanelItem extends Component<IListItemActionPanelItem> {
+export class ListActionPanel extends Component<IListItemActionPanelItem> {
     onPlaySound(text?:string, language?: string) {
         if (language && text) {
             const voiceIndex = 0
@@ -46,7 +47,7 @@ export class ListItemActionPanelItem extends Component<IListItemActionPanelItem>
     render() {
         const playSoundIcon = Icon.Message
         return <ActionPanel>
-            <ActionCopyListSection copyText={ this.props.copyText }/>
+            <ActionCopyListSection copyText={ this.props.copyText } copyMode={ this.props.copyMode }/>
             {
                 (this.props.currentFromLanguage ||
                     this.props.currentTargetLanguage ) &&

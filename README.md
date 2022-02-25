@@ -8,6 +8,19 @@ App key: MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM
 
 Default copy item only show 10 or less, More result go to Youdao website
 
+## Copy Text
+
+All copy item in action list view, you can click it or use `cmd` + `k` show it.
+
+*lowerCamelCase copy and UPPERCASE copy feature only for English*
+
+### Lower Camel Case Copy (lowerCamelCase)
+use ```>``` before query text to Copy Lower Camel Case translate results, like `> 你好`
+
+### All Uppercase Copy (ALL_UPPERCASE)
+use ```>>``` before query text to Copy Uppercase result, like `>> 你好` 
+
+
 ## Text to Speech Language
 
 or use this command show you macOS support languages
@@ -25,7 +38,7 @@ or use this command show you macOS support languages
 |Daniel|              en_GB|    # Hello, my name is Daniel. I am a British-English voice.
 |Diego|               es_AR|    # Hola, me llamo Diego y soy una voz española.
 |Ellen|               nl_BE|    # Hallo, mijn naam is Ellen. Ik ben een Belgische stem.
-|Fiona|               en|-scotland # Hello, my name is Fiona. I am a Scottish-English voice.
+|Fiona|               en-scotland| # Hello, my name is Fiona. I am a Scottish-English voice.
 |Fred|                en_US|    # I sure like being inside this fancy computer
 |Ioana|               ro_RO|    # Bună, mă cheamă Ioana . Sunt o voce românească.
 |Joana|               pt_PT|    # Olá, chamo-me Joana e dou voz ao português falado em Portugal.
