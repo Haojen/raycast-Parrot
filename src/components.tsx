@@ -1,9 +1,10 @@
 import {Component} from "react";
 import {exec} from "child_process";
+import {COPY_TYPE} from "./consts";
 import {languageList, sayLanguageList} from "./i18n";
 import {reformatCopyTextArray, truncate} from "./shared.func";
-import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard } from "@raycast/api";
-import {IActionCopyListSection, IListItemActionPanelItem, IPreferences} from "./types";
+import {IActionCopyListSection, IListItemActionPanelItem, IPreferences } from "./types";
+import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard} from "@raycast/api";
 
 const preferences: IPreferences = getPreferenceValues();
 
@@ -19,14 +20,37 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
 
     const shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
+    function changeTextCopyStyle(text: string): string {
+        let result = text
+        const textArray:string[] = text.split(' ')
+        if (props.copyMode === COPY_TYPE.Uppercase) {
+            const SEPARATOR = '_'
+            return textArray.map(text => {
+                return text.toUpperCase()
+            }).join(SEPARATOR)
+        }
+        else if (props.copyMode === COPY_TYPE.LowercaseCamelCase && textArray.length > 1) {
+            return textArray.map((text, idx) => {
+                if (idx === 0) return text.toLowerCase()
+
+                const firstLetter = text.slice(0, 1).toUpperCase()
+                return firstLetter + text.slice(1, text.length)
+            }).join('')
+        }
+
+        return  result
+    }
+
     return <ActionPanel.Section>
         {
             finalTextArray.map( (textItem, key) => {
+                const title = changeTextCopyStyle(textItem.title)
+                const value = changeTextCopyStyle(textItem.value)
                 return (
                     <Action.CopyToClipboard
                         onCopy={ () => preferences.isAutomaticPaste && Clipboard.paste(textItem.value) }
                         shortcut={ {modifiers: ['cmd'], key: shortcutKeyEquivalent[key]} }
-                        title={ `Copy ${props.copyMode} ${ textItem.title }`} content={ textItem.value } key={key}
+                        title={ `Copy ${ title }`} content={ value } key={key}
                     />
                 )
             })
