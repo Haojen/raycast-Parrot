@@ -99,7 +99,10 @@ export default function () {
             subtitle={`code: ${ fetchResultStateCode }`}
             actions={
                 <ActionPanel>
-                    <Action.OpenInBrowser icon={ Icon.QuestionMark } title="Help" url="https://github.com/Haojen/raycast-Parrot"/>
+                    <Action.OpenInBrowser
+                        title="Help"
+                        icon={ Icon.QuestionMark }
+                        url="https://github.com/Haojen/raycast-Parrot#error-code-information"/>
                 </ActionPanel> } />
     }
     function onInputChangeEvt(queryText:string) {
