@@ -76,3 +76,27 @@ or use this command show you macOS support languages
 |Yuri|                ru_RU|    # Здравствуйте, меня зовут Yuri. Я – русский голос системы.
 |Zosia|               pl_PL|    # Witaj. Mam na imię Zosia, jestem głosem kobiecym dla języka polskiego.
 |Zuzana|              cs_CZ|    # Dobrý den, jmenuji se Zuzana. Jsem český hlas.
+
+## Error Code Information
+More error code information please visit [Youdao API Document (中文)](https://ai.youdao.com/DOCSIRMA/html/自然语言翻译/API文档/文本翻译服务/文本翻译服务-API文档.html),
+or you can submit an issue. 
+
+|Code |	Description|
+| ----------- | ----------- |
+|101 |	缺少必填的参数,首先确保必填参数齐全，然后确认参数书写是否正确。|
+|103|	翻译文本过长|
+|106|	不支持的响应类型|
+|108|	应用ID无效，注册账号，登录后台创建应用和实例并完成绑定，可获得应用ID和应用密钥等信息|
+|112|	请求服务无效|
+|113|	q不能为空|
+|116|	strict字段取值无效，请参考文档填写正确参数值|
+|201|	解密失败，可能为DES,BASE64,URLDecode的错误|
+|202|	签名检验失败,如果确认应用ID和应用密钥的正确性，仍返回202，一般是编码问题。请确保翻译文本 q 为UTF-8编码.|
+|206|	因为时间戳无效导致签名校验失败|
+|207|	重放请求|
+|302|	翻译查询失败|
+|303|	服务端的其它异常|
+|304|	会话闲置太久超时|
+|411|	访问频率受限,请稍后访问|
+|412|	长请求过于频繁，请稍后访问|
+

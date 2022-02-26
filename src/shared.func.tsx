@@ -66,7 +66,9 @@ export function reformatTranslateResult(data: ITranslateResult): ITranslateRefor
 
     // Delete repeated text item
     // 在有道结果中 Translation 目前观测虽然是数组，但只会返回length为1的结果，而且重复只是和explains[0]。
-    data.basic?.explains[0] === data?.translation[0] && data.basic.explains.shift()
+    if (data.basic?.explains && data?.translation) {
+        data.basic?.explains[0] === data?.translation[0] && data.basic.explains.shift()
+    }
 
     reformatData.push({
         children: data.basic?.explains?.map((text, idx) => {
@@ -75,7 +77,7 @@ export function reformatTranslateResult(data: ITranslateResult): ITranslateRefor
     })
 
     reformatData.push({
-        type: 'Other from Web Results',
+        type: 'Other Results',
         children: data.web?.map((webResultItem, idx) => {
             return {
                 title: webResultItem.key,

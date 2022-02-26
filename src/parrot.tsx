@@ -1,7 +1,7 @@
 import {COPY_TYPE} from "./consts";
 import {ListActionPanel} from "./components"
 import {Fragment, useEffect, useState} from 'react'
-import {getPreferenceValues, Icon, List,} from '@raycast/api'
+import {Action, ActionPanel, getPreferenceValues, Icon, List} from '@raycast/api'
 import {ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult} from './types'
 import {
     requestYoudaoAPI,
@@ -52,7 +52,7 @@ export default function () {
                 updateTranslateFromLanguageState(getItemFromLanguageList(a))
                 updateCurrentTargetLanguageState(getItemFromLanguageList(b))
             })
-        }, 900)
+        }, 90)
     }, [inputState, translateTargetLanguage])
 
 
@@ -93,7 +93,14 @@ export default function () {
         }
 
         // TODO: Try use Detail
-        return  <List.Item title={'Transition Error'} subtitle={ fetchResultStateCode } />
+        return  <List.Item
+            icon={ Icon.XmarkCircle }
+            title={`Sorry! We have some problems..`}
+            subtitle={`code: ${ fetchResultStateCode }`}
+            actions={
+                <ActionPanel>
+                    <Action.OpenInBrowser icon={ Icon.QuestionMark } title="Help" url="https://github.com/Haojen/raycast-Parrot"/>
+                </ActionPanel> } />
     }
     function onInputChangeEvt(queryText:string) {
         clearTimeout(delayFetchTranslateAPITimer)

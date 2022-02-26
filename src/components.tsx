@@ -99,7 +99,7 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
                 }
             </ActionPanel.Section>
             <ActionPanel.Section title="Others">
-                <Action.OpenInBrowser icon={ Icon.Person } title="Feedback" url="https://github.com/Haojen/raycast-Parrot" />
+                <Action.OpenInBrowser icon={ Icon.QuestionMark } title="Feedback" url="https://github.com/Haojen/raycast-Parrot" />
             </ActionPanel.Section>
         </ActionPanel>
     }
