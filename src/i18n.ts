@@ -1,11 +1,4 @@
-export const i18nRegionList = {
-    zh: {
-        en: 'zh',
-        zh: '中文',
-        jp: '',
-
-    }
-}
+import {ISayLanguageList, ILanguageListItem2} from "./types";
 
 export const languageList: ILanguageListItem[] = [
     {
@@ -46,24 +39,82 @@ export const sayLanguageList:ISayLanguageList = {
     }
 }
 
-//
-// 中文	zh-CHS
-// 英文	en
-// 日文	ja
-// 韩文	ko
-// 法文	fr
-// 西班牙文	es
-// 葡萄牙文	pt
-// 意大利文	it
-// 俄文	ru
-// 越南文	vi
-// 德文	de
-// 阿拉伯文	ar
+export const LANGUAGE_LIST:ILanguageListItem2[] = [
+    {
+        languageId: 'zh-CHS',
+        languageTitle: 'Chinese-Simplified',
+        languageVoice: ['Ting-Ting']
+    },
+    {
+        languageId: 'en',
+        languageTitle: 'English',
+        languageVoice: ['Alex', 'Fred', 'Samantha', 'Victoria', 'Daniel','Karen', 'Moira', 'Rishi', 'Tessa', 'Veena']
+    },
+    {
+        languageId: 'ja',
+        languageTitle: 'Japan',
+        languageVoice: ['Kyoko']
+    },
+    {
+        languageId: 'ko',
+        languageTitle: 'Korea',
+        languageVoice: ['Yuna']
+    },
+    {
+        languageId: 'fr',
+        languageTitle: 'French',
+        languageVoice: ['Amelie'],
+    },
+    {
+        languageId: 'es',
+        languageTitle: 'Spanish',
+        languageVoice: ['Diego', 'Jorge', 'Juan', 'Monica', 'Paulina']
+    },
+    {
+        languageId: 'pt',
+        languageTitle: 'Portuguese',
+        languageVoice: ['Joana', 'Luciana']
+    },
+    {
+        languageId: 'it',
+        languageTitle: 'Italian',
+        languageVoice: ['Alice', 'Luca']
+    },
+    {
+        languageId: 'ru',
+        languageTitle: 'Russian',
+        languageVoice: ['Milena', 'Yuri']
+    },
+    {
+        languageId: 'de',
+        languageTitle: 'German',
+        languageVoice: ['Anna']
+    },
+    {
+        languageId: 'ar',
+        languageTitle: 'Arabic',
+        languageVoice: ['Maged']
+    }, {
+        languageId: '',
+        languageTitle: '',
+        languageVoice: ['']
+    }, {
+        languageId: '',
+        languageTitle: '',
+        languageVoice: ['']
+    }, {
+        languageId: '',
+        languageTitle: '',
+        languageVoice: ['']
+    },
+]
+
+// 111种语言
 // 印尼文	id
 // 南非荷兰语	af
 // 波斯尼亚语	bs
 // 保加利亚语	bg
-// 粤语	yue
+// 粤语	yue 需要测试
 // 加泰隆语	ca
 // 克罗地亚语	hr
 // 捷克语	cs
@@ -158,3 +209,27 @@ export const sayLanguageList:ISayLanguageList = {
 // 意第绪语	yi
 // 约鲁巴语	yo
 // 南非祖鲁语	zu
+
+//     | Syntax      | Description | Des |
+//     | ----------- | ----------- | ----------- |
+//     |Alex |                en_US|  # Most people recognize me by my voice.
+// |Alva|                sv_SE|    # Hej, jag heter Alva. Jag är en svensk röst.
+// |Carmit|              he_IL|    # שלום. קוראים לי כרמית, ואני קול בשפה העברית.
+// |Damayanti|           id_ID|    # Halo, nama saya Damayanti. Saya berbahasa Indonesia.
+// |Ellen|               nl_BE|    # Hallo, mijn naam is Ellen. Ik ben een Belgische stem.
+// |Fiona|               en-scotland| # Hello, my name is Fiona. I am a Scottish-English voice.
+// |Ioana|               ro_RO|    # Bună, mă cheamă Ioana . Sunt o voce românească.
+// |Kanya|               th_TH|    # สวัสดีค่ะ ดิฉันชื่อKanya
+// |Laura|               sk_SK |   # Ahoj. Volám sa Laura . Som hlas v slovenskom jazyku.
+// |Lekha|              hi_IN |   # नमस्कार, मेरा नाम लेखा है. मैं हिन्दी में बोलने वाली आवाज़ हूँ.
+// |Maged               |ar_SA|    # مرحبًا اسمي Maged. أنا عربي من السعودية.
+// |Mariska             |hu_HU|    # Üdvözlöm! Mariska vagyok. Én vagyok a magyar hang.
+// |Melina              |el_GR|    # Γεια σας, ονομάζομαι Melina. Είμαι μια ελληνική φωνή.
+// |Nora                |nb_NO|    # Hei, jeg heter Nora. Jeg er en norsk stemme.
+// |Sara                |da_DK|    # Hej, jeg hedder Sara. Jeg er en dansk stemme.
+// |Satu                |fi_FI|    # Hei, minun nimeni on Satu. Olen suomalainen ääni.
+// |Thomas              |fr_FR   | # Bonjour, je m’appelle Thomas. Je suis une voix française.
+// |Xander              |nl_NL   | # Hallo, mijn naam is Xander. Ik ben een Nederlandse stem.
+// |Yelda|               tr_TR|    # Merhaba, benim adım Yelda. Ben Türkçe bir sesim.
+// |Zosia|               pl_PL|    # Witaj. Mam na imię Zosia, jestem głosem kobiecym dla języka polskiego.
+// |Zuzana|              cs_CZ|    # Dobrý den, jmenuji se Zuzana. Jsem český hlas.

@@ -77,3 +77,9 @@ export interface IActionCopyListSection {
     copyMode: COPY_TYPE
     autoPasteText?: string
 }
+
+export interface ILanguageListItem2 {
+    languageId: string
+    languageTitle: string
+    languageVoice: string[]
+}
