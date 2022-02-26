@@ -1,12 +1,5 @@
 # raycast-Parrot
-A translate extension of Raycast
-
-## 提供默认的有道 Appkey 和 ID
-
-App id: 0d68776be7e9be0b
-App key: MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM
-
-Default copy item only show 10 or less, More result go to Youdao website
+A translate extension of Raycast, Support 12+ Languages
 
 ## Copy Text
 
@@ -100,3 +93,7 @@ or you can submit an issue.
 |411|	访问频率受限,请稍后访问|
 |412|	长请求过于频繁，请稍后访问|
 
+## Provider Default API ID and Key
+
+App id: 0d68776be7e9be0b
+App key: MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM

@@ -52,7 +52,7 @@ export default function () {
                 updateTranslateFromLanguageState(getItemFromLanguageList(a))
                 updateCurrentTargetLanguageState(getItemFromLanguageList(b))
             })
-        }, 90)
+        }, 900)
     }, [inputState, translateTargetLanguage])
 
 

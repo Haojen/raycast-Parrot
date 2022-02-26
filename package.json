@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "parrot",
-  "title": "parrot",
+  "title": "Parrot",
   "description": "A translate extension of Raycast",
   "icon": "command-icon.png",
   "author": "Haojen",
@@ -9,7 +9,7 @@
   "commands": [
     {
       "name": "parrot",
-      "title": "parrot",
+      "title": "Parrot",
       "subtitle": "translate..",
       "description": "translate",
       "mode": "view"
@@ -101,15 +101,7 @@
       "default": "MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM"
     },
     {
-      "name": "keepRecentTargetLanguage",
-      "type": "checkbox",
-      "label": "on off",
-      "required": false,
-      "title": "Keep Recent Target Language",
-      "description": "Keep Recent Target Language",
-      "default": false
-    },
-    {
+      "title": "Others",
       "name": "isAutomaticPaste",
       "type": "checkbox",
       "label": "Automatic Paste",
