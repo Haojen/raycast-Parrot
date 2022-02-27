@@ -1,9 +1,8 @@
 import axios from "axios";
 import crypto from "crypto";
-import {COPY_TYPE} from "./consts"
-import {LANGUAGE_LIST} from "./i18n"
 import querystring from "querystring"
 import {getPreferenceValues} from "@raycast/api"
+import {COPY_TYPE, LANGUAGE_LIST} from "./consts"
 
 import {
     ILanguageListItem,

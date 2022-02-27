@@ -1,7 +1,6 @@
 import {Component} from "react";
 import {exec} from "child_process";
-import {COPY_TYPE} from "./consts";
-import {LANGUAGE_LIST} from "./i18n";
+import {COPY_TYPE, LANGUAGE_LIST} from "./consts";
 import {reformatCopyTextArray, truncate} from "./shared.func";
 import {IActionCopyListSection, IListItemActionPanelItem, IPreferences } from "./types";
 import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard} from "@raycast/api";
