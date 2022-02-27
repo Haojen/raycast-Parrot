@@ -1,5 +1,11 @@
 # raycast-Parrot
-A translate extension of Raycast, Support 12+ Languages
+A Raycast translation Extension, Supports 26+ for languages.
+
+## Features
+
+1. Support Play TTS (Text to Speech)
+2. Support Copy and Auto Paste, also support lowerCamelCase and ALL_UPPERCASE copy mode.
+3. Quick translation mode switch
 
 ## Copy Text
 

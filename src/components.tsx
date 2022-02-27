@@ -104,6 +104,8 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
             </ActionPanel.Section>
             <ActionPanel.Section title="Others">
                 <Action.OpenInBrowser icon={ Icon.QuestionMark } title="Feedback" url="https://github.com/Haojen/raycast-Parrot" />
+                {/* Read about current word more explanation */}
+                {/*<Action.OpenInBrowser icon={ Icon.Document } title="More explanation" url="https://github.com/Haojen/raycast-Parrot" />*/}
             </ActionPanel.Section>
         </ActionPanel>
     }
