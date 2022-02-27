@@ -1,16 +1,14 @@
 import { COPY_TYPE } from "./consts";
 
 export interface ITranslateResult {
+    l: string
+    query: string
+    returnPhrase: []
     webdict?: string
     errorCode: string
     translation: string[]
     web?: ITranslateResultWebItem[]
     basic?: ITranslateResultBasicItem,
-
-    // unused
-    l: string
-    query: string
-    returnPhrase: []
 }
 
 export interface ITranslateReformatResult {
@@ -54,21 +52,8 @@ export interface IListItemActionPanelItem {
     onLanguageUpdate: (language: ILanguageListItem) => void
 }
 
-export interface ISayLanguageList {
-    [key: string]: {
-        voice: string[]
-        language: string[]
-    }
-}
-
 export interface IReformatTranslateResult {
     title: string
-    value: string
-}
-
-export interface ILanguageListItem {
-    title: string
-    flag: string
     value: string
 }
 
@@ -78,7 +63,7 @@ export interface IActionCopyListSection {
     autoPasteText?: string
 }
 
-export interface ILanguageListItem2 {
+export interface ILanguageListItem {
     languageId: string
     languageTitle: string
     languageVoice: string[]

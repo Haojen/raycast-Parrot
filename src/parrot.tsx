@@ -35,7 +35,7 @@ export default function () {
 
         clearTimeout(delayFetchTranslateAPITimer)
         delayFetchTranslateAPITimer = setTimeout(() => {
-            requestYoudaoAPI(inputState, translateTargetLanguage.value).then(res => {
+            requestYoudaoAPI(inputState, translateTargetLanguage.languageId).then(res => {
                 const resData:ITranslateResult = res.data
 
                 const [a, b] = resData.l.split('2') // en2zh
@@ -132,8 +132,8 @@ export default function () {
             isLoading={ isLoadingState }
             searchBarPlaceholder={'Translate to..'}
             onSearchTextChange={ inputText => onInputChangeEvt(inputText) }
-            navigationTitle={ translateFromLanguageState?.title && currentTargetLanguageState?.title ?
-                `Parrot: ${translateFromLanguageState.title} → ${currentTargetLanguageState.title}` : 'Parrot' }
+            navigationTitle={ translateFromLanguageState?.languageTitle && currentTargetLanguageState?.languageTitle ?
+                `Parrot: ${translateFromLanguageState.languageTitle} → ${currentTargetLanguageState.languageTitle}` : 'Parrot' }
             actions={
                 <ListActionPanel
                     queryText={ inputState }

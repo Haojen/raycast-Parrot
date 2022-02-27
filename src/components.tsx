@@ -1,7 +1,7 @@
 import {Component} from "react";
 import {exec} from "child_process";
 import {COPY_TYPE} from "./consts";
-import {languageList, sayLanguageList} from "./i18n";
+import {LANGUAGE_LIST} from "./i18n";
 import {reformatCopyTextArray, truncate} from "./shared.func";
 import {IActionCopyListSection, IListItemActionPanelItem, IPreferences } from "./types";
 import {Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard} from "@raycast/api";
@@ -62,9 +62,13 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
     onPlaySound(text?:string, language?: string) {
         if (language && text) {
             const voiceIndex = 0
-            const lang = sayLanguageList[language].voice[voiceIndex]
 
-            exec(`say -v ${lang} ${ truncate(text) }`)
+            for (let LANG of LANGUAGE_LIST) {
+                if (language === LANG.languageId) {
+                    const sayCommand = `say -v ${LANG.languageVoice[voiceIndex]} ${truncate(text)}`
+                    LANG.languageVoice.length > 0 && exec(sayCommand)
+                }
+            }
         }
     }
 
@@ -79,21 +83,21 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
                     <ActionPanel.Item
                         title="Play Input Text Sound"
                         icon={ playSoundIcon }
-                        onAction={ () => this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.value) } />
+                        onAction={ () => this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.languageId) } />
                     <ActionPanel.Item
                         title="Play Result Sound"
                         icon={ playSoundIcon }
-                        onAction={ () => this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.value) }/>
+                        onAction={ () => this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.languageId) }/>
                 </ActionPanel.Section>
             }
             <ActionPanel.Section title="Language">
                 {
-                    languageList.map( region => {
+                    LANGUAGE_LIST.map( region => {
                         return <ActionPanel.Item
-                            key={ region.title }
-                            title={ region.title }
+                            key={ region.languageId }
+                            title={ region.languageTitle }
                             onAction={ () => this.props.onLanguageUpdate(region) }
-                            icon={ this.props.currentTargetLanguage?.value === region.value ? Icon.ArrowRight : Icon.Globe}
+                            icon={ this.props.currentTargetLanguage?.languageId === region.languageId ? Icon.ArrowRight : Icon.Globe}
                         />
                     })
                 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import crypto from "crypto";
-import {languageList} from "./i18n"
 import {COPY_TYPE} from "./consts"
+import {LANGUAGE_LIST} from "./i18n"
 import querystring from "querystring"
 import {getPreferenceValues} from "@raycast/api"
 
@@ -21,16 +21,16 @@ export function truncate(string: string, length: number = 16, separator: string 
 }
 
 export function getItemFromLanguageList(value: string): ILanguageListItem{
-    for (let langItem of languageList) {
-        if (langItem.value === value) {
+    for (let langItem of LANGUAGE_LIST) {
+        if (langItem.languageId === value) {
             return langItem
         }
     }
 
     return {
-        flag: '',
-        title: '',
-        value: ''
+        languageId: '',
+        languageTitle: '',
+        languageVoice: ['']
     }
 }
 
