@@ -4,7 +4,6 @@ export interface ITranslateResult {
     l: string
     query: string
     returnPhrase: []
-    webdict?: string
     errorCode: string
     translation: string[]
     web?: ITranslateResultWebItem[]
@@ -67,4 +66,5 @@ export interface ILanguageListItem {
     languageId: string
     languageTitle: string
     languageVoice: string[]
+    googleLanguageId?: string
 }

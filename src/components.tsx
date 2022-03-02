@@ -71,6 +71,13 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
         }
     }
 
+    getGoogleTranslateURL(): string {
+        const from = this.props.currentFromLanguage?.googleLanguageId ||  this.props.currentFromLanguage?.languageId
+        const to = this.props.currentTargetLanguage?.googleLanguageId ||  this.props.currentTargetLanguage?.languageId
+        const text = encodeURI(this.props.queryText!)
+        return `https://translate.google.com/?sl=${from}&tl=${to}&text=${text}&op=translate`
+    }
+
     render() {
         const playSoundIcon = Icon.Message
         return <ActionPanel>
@@ -103,8 +110,12 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
             </ActionPanel.Section>
             <ActionPanel.Section title="Others">
                 <Action.OpenInBrowser icon={ Icon.QuestionMark } title="Feedback" url="https://github.com/Haojen/raycast-Parrot" />
-                {/* Read about current word more explanation */}
-                {/*<Action.OpenInBrowser icon={ Icon.Document } title="More explanation" url="https://github.com/Haojen/raycast-Parrot" />*/}
+                {
+                    this.props.currentFromLanguage &&
+                        this.props.currentTargetLanguage &&
+                        this.props.copyText &&
+                    <Action.OpenInBrowser icon={ Icon.Link } title="See Google Translate Results" url={ this.getGoogleTranslateURL() } />
+                }
             </ActionPanel.Section>
         </ActionPanel>
     }

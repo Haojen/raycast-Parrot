@@ -9,8 +9,9 @@ export enum COPY_TYPE {
 export const LANGUAGE_LIST:ILanguageListItem[] = [
     {
         languageId: 'zh-CHS',
+        googleLanguageId: 'zh-CN',
+        languageVoice: ['Ting-Ting'],
         languageTitle: 'Chinese-Simplified',
-        languageVoice: ['Ting-Ting']
     },
     {
         languageId: 'en',
@@ -69,6 +70,7 @@ export const LANGUAGE_LIST:ILanguageListItem[] = [
     },
     {
         languageId: 'he',
+        googleLanguageId: 'iw',
         languageTitle: 'Hebrew',
         languageVoice: ['Carmit']
     },
