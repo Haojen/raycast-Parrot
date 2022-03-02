@@ -3,15 +3,15 @@
   "name": "parrot",
   "title": "Parrot",
   "description": "A translate extension of Raycast",
-  "icon": "command-icon.png",
+  "icon": "parrot-icon.png",
   "author": "Haojen",
   "license": "MIT",
   "commands": [
     {
       "name": "parrot",
       "title": "Parrot",
-      "subtitle": "translate..",
-      "description": "translate",
+      "subtitle": "A Translation Extension",
+      "description": "A translation Extension, Powerful and Easy to use.",
       "mode": "view"
     }
   ],
@@ -21,31 +21,111 @@
       "type": "dropdown",
       "required": true,
       "title": "First Language",
-      "description": "",
+      "description": "Select you first language",
       "data": [
-        {
-          "title": "Auto Detect",
-          "value": "auto"
-        },
         {
           "title": "English",
           "value": "en"
         },
         {
-          "title": "Chinise",
+          "title": "Chinese-Simplified",
           "value": "zh-CHS"
         },
         {
-          "title": "🇿🇦 Afrikaans",
-          "value": "af"
+          "title": "Japan",
+          "value": "ja"
         },
         {
-          "title": "🇦🇱 Albanian",
-          "value": "sq"
+          "title": "Korea",
+          "value": "ko"
         },
         {
-          "title": "Amharic",
-          "value": "am"
+          "title": "French",
+          "value": "fr"
+        },
+        {
+          "title": "Spanish",
+          "value": "es"
+        },
+        {
+          "title": "Portuguese",
+          "value": "pt"
+        },
+        {
+          "title": "Italian",
+          "value": "it"
+        },
+        {
+          "title": "Russian",
+          "value": "ru"
+        },
+        {
+          "title": "German",
+          "value": "de"
+        },
+        {
+          "title": "Arabic",
+          "value": "ar"
+        },
+        {
+          "title": "Swedish",
+          "value": "sv"
+        },
+        {
+          "title": "Hebrew",
+          "value": "he"
+        },
+        {
+          "title": "Indonesia",
+          "value": "id"
+        },
+        {
+          "title": "Dutch",
+          "value": "nl"
+        },
+        {
+          "title": "Romanian",
+          "value": "ro"
+        },
+        {
+          "title": "Thai",
+          "value": "th"
+        },
+        {
+          "title": "Slovak",
+          "value": "sk"
+        },
+        {
+          "title": "Hindi",
+          "value": "hi"
+        },
+        {
+          "title": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "title": "Greek",
+          "value": "el"
+        },
+        {
+          "title": "Danish",
+          "value": "da"
+        },
+        {
+          "title": "Finnish",
+          "value": "fi"
+        },
+        {
+          "title": "Turkish",
+          "value": "tr"
+        },
+        {
+          "title": "Polish",
+          "value": "pl"
+        },
+        {
+          "title": "Czech",
+          "value": "cs"
         }
       ]
     },
@@ -53,32 +133,112 @@
       "name": "lang2",
       "type": "dropdown",
       "required": true,
-      "title": "Secound Language",
-      "description": "",
+      "title": "Second Language",
+      "description": "Select you second language",
       "data": [
         {
-          "title": "Auto Detect",
-          "value": "auto"
+          "title": "Chinese-Simplified",
+          "value": "zh-CHS"
         },
         {
           "title": "English",
           "value": "en"
         },
         {
-          "title": "Chinise",
-          "value": "zh-CHS"
+          "title": "Japan",
+          "value": "ja"
         },
         {
-          "title": "🇿🇦 Afrikaans",
-          "value": "af"
+          "title": "Korea",
+          "value": "ko"
         },
         {
-          "title": "🇦🇱 Albanian",
-          "value": "sq"
+          "title": "French",
+          "value": "fr"
         },
         {
-          "title": "Amharic",
-          "value": "am"
+          "title": "Spanish",
+          "value": "es"
+        },
+        {
+          "title": "Portuguese",
+          "value": "pt"
+        },
+        {
+          "title": "Italian",
+          "value": "it"
+        },
+        {
+          "title": "Russian",
+          "value": "ru"
+        },
+        {
+          "title": "German",
+          "value": "de"
+        },
+        {
+          "title": "Arabic",
+          "value": "ar"
+        },
+        {
+          "title": "Swedish",
+          "value": "sv"
+        },
+        {
+          "title": "Hebrew",
+          "value": "he"
+        },
+        {
+          "title": "Indonesia",
+          "value": "id"
+        },
+        {
+          "title": "Dutch",
+          "value": "nl"
+        },
+        {
+          "title": "Romanian",
+          "value": "ro"
+        },
+        {
+          "title": "Thai",
+          "value": "th"
+        },
+        {
+          "title": "Slovak",
+          "value": "sk"
+        },
+        {
+          "title": "Hindi",
+          "value": "hi"
+        },
+        {
+          "title": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "title": "Greek",
+          "value": "el"
+        },
+        {
+          "title": "Danish",
+          "value": "da"
+        },
+        {
+          "title": "Finnish",
+          "value": "fi"
+        },
+        {
+          "title": "Turkish",
+          "value": "tr"
+        },
+        {
+          "title": "Polish",
+          "value": "pl"
+        },
+        {
+          "title": "Czech",
+          "value": "cs"
         }
       ]
     },
@@ -87,8 +247,7 @@
       "type": "textfield",
       "required": true,
       "title": "App ID",
-      "description": "",
-      "placeholder": "",
+      "description": "Your App ID",
       "default": "0d68776be7e9be0b"
     },
     {
@@ -96,8 +255,7 @@
       "type": "textfield",
       "required": true,
       "title": "App Key",
-      "placeholder": "",
-      "description": "",
+      "description": "Your App Key",
       "default": "MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM"
     },
     {
