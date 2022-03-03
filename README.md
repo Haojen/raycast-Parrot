@@ -24,7 +24,7 @@ Use ```>``` before query text to copy translate results, for example: `> Hola`
 #### 2. ALL_UPPERCASE
 Use ```>>``` before query text to copy translate result, for example: `>> Hola`
 
-### Text to Speech-Language(TTS) List
+### Support Languages & TTS(Text-to-Speech)
 You can play Query Text and Results Text
 
 |Language| Voice | Default |
