@@ -1,17 +1,17 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "parrot",
-  "title": "Parrot",
-  "description": "A translate extension of Raycast",
+  "name": "parrot-translate",
+  "title": "Parrot Translate",
+  "description": "Powerful and Easy to use translation, Support TTS and lowerCamelCase/ALL_UPPERCASE Copy mode, and more",
   "icon": "parrot-icon.png",
   "author": "Haojen",
   "license": "MIT",
   "commands": [
     {
       "name": "parrot",
-      "title": "Parrot",
-      "subtitle": "Translate to ..",
-      "description": "A translation Extension, Powerful and Easy to use.",
+      "title": "Translate",
+      "subtitle": "Parrot",
+      "description": "Powerful and Easy to use translation, Support TTS and lowerCamelCase/ALL_UPPERCASE Copy mode, and more",
       "mode": "view"
     }
   ],
@@ -245,7 +245,7 @@
     {
       "name": "appId",
       "type": "textfield",
-      "required": true,
+      "required": false,
       "title": "App ID",
       "description": "Your App ID",
       "default": "0d68776be7e9be0b"
@@ -253,7 +253,7 @@
     {
       "name": "appKey",
       "type": "textfield",
-      "required": true,
+      "required": false,
       "title": "App Key",
       "description": "Your App Key",
       "default": "MIbu7DGsOPdbatL9KmgycGx0qDOzQWCM"
