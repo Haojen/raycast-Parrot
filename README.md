@@ -5,7 +5,7 @@
   <strong>raycast-Parrot</strong>
 </p>
 <p align="center">A Raycast translation Extension, Powerful and Easy to use. </p>
-<p align="center">🇺🇸 🇬🇧 🇩🇪 🇫🇷 🇨🇳 🇯🇵 🇷🇺 🇪🇸 🇵🇹 🇬🇷 🇫🇮 🇮🇩 🇨🇦 🇰🇷 🇮🇹 🇦🇪 🇳🇴 🇮🇱 🇸🇰 🇹🇷 🇵🇱 🇨🇿 🇭🇺 🇭🇹 🇹🇭 🇳🇱 🇸🇪 🇦🇺</p>
+<p align="center">🇺🇸 🇬🇧 🇩🇪 🇫🇷 🇨🇳 🇯🇵 🇷🇺 🇪🇸 🇵🇹 🇬🇷 🇫🇮 🇦🇷 🇮🇩 🇨🇦 🇰🇷 🇮🇹 🇦🇪 🇳🇴 🇲🇽 🇮🇱 🇸🇰 🇹🇷 🇵🇱 🇨🇿 🇭🇺 🇭🇹 🇹🇭 🇳🇱 🇸🇪 🇦🇺</p>
 
 ## Features
 1. Supports 26+ for languages.
@@ -36,32 +36,32 @@ Use `say` command test chosen vioce
 
 |Language| Voice | Default |
 | -----------| ----------- | ----------- |
-| English | Alex(Default), Fred, Samantha, Victoria, Daniel, Karen, Moira, Rishi, Tessa, Veena, Fiona|en_US|
-| Spanish | Diego, Jorge, Monica, Paulina | es_AR|
-| 🇮🇹 Italiana | Alice, Luca |               it_IT|
-| 🇸🇪 Swedish | Alva|                sv_SE| 
-| 🇫🇷 French | Amelie, Thomas|              fr_CA|
-| 🇩🇪 German |Anna|                de_DE|  
-| 🇮🇱 Hebrew |Carmit|              he_IL|  
-| 🇮🇩 Indonesia |Damayanti|           id_ID|
-| 🇳🇱 Dutch |Ellen, Xander | nl_BE|
-| 🇷🇴 Romanian |Ioana|ro_RO| 
-| 🇵🇹 Portuguese |Joana, Luciana|  pt_PT|
-| 🇹🇭 Thai |Kanya| th_TH|  
-| 🇯🇵 Japan |Kyoko| ja_JP|
-| 🇸🇰 Slovak |Laura|sk_SK |
-| 🇭🇹 Hindi |Lekha| hi_IN |
-| 🇦🇪 Arabic |Maged               |ar_SA| 
-| 🇭🇺 Hungarian |Mariska             |hu_HU|  
-| 🇬🇷 Greek |Melina              |el_GR|  
-| 🇷🇺 Russian |Milena, Yuri |ru_RU|   
-| 🇩🇰 Danish |Sara                |da_DK|
-| 🇫🇮 Finnish |Satu                |fi_FI| 
-| 🇨🇳 Chinese-Simplified | Ting-Ting |zh_CN   | 
-| 🇹🇷 Turkish |Yelda| tr_TR | 
-| 🇰🇷 Korea |Yuna|                ko_KR|
-| 🇵🇱 Polish |Zosia|               pl_PL|
-| 🇨🇿 Czech |Zuzana|              cs_CZ| 
+| English | 🇺🇸 Alex 🇺🇸 Fred 🇺🇸 Samantha 🇺🇸 Victoria 🇬🇧 Daniel 🇦🇺 Karen 🇮🇪 Moira 🇮🇳 Rishi 🇮🇳 Veena 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Fiona 🌍 Tessa| Alex |
+| Spanish | 🇪🇸 Jorge 🇪🇸 Monica 🇦🇷 Diego 🇲🇽 Paulina | Jorge |
+| 🇮🇹 Italiana | Alice, Luca | Alice |
+| 🇸🇪 Swedish | Alva| - | 
+| 🇫🇷 French | Amelie, Thomas|Amelie|
+| 🇩🇪 German |Anna| -|  
+| 🇮🇱 Hebrew |Carmit|-|  
+| 🇮🇩 Indonesia |Damayanti|-|
+| 🇳🇱 Dutch |Ellen, Xander | Ellen|
+| 🇷🇴 Romanian |Ioana|-| 
+| 🇵🇹 Portuguese |Joana, Luciana|  Joana|
+| 🇹🇭 Thai |Kanya| -|  
+| 🇯🇵 Japan |Kyoko| -|
+| 🇸🇰 Slovak |Laura|- |
+| 🇭🇹 Hindi |Lekha| - |
+| 🇦🇪 Arabic |Maged|-| 
+| 🇭🇺 Hungarian |Mariska|-|  
+| 🇬🇷 Greek |Melina|-|  
+| 🇷🇺 Russian |Milena, Yuri |Milena|   
+| 🇩🇰 Danish |Sara|-|
+| 🇫🇮 Finnish |Satu|-| 
+| 🇨🇳 Chinese-Simplified | Ting-Ting |-| 
+| 🇹🇷 Turkish |Yelda|-| 
+| 🇰🇷 Korea |Yuna|-|
+| 🇵🇱 Polish |Zosia|-|
+| 🇨🇿 Czech |Zuzana|-| 
 
 ## Error Code Information
 More error code information please visit [Youdao API Document (中文)](https://ai.youdao.com/DOCSIRMA/html/自然语言翻译/API文档/文本翻译服务/文本翻译服务-API文档.html),
