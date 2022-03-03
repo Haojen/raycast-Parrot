@@ -1,4 +1,4 @@
-import { COPY_TYPE } from "./consts";
+import { COPY_TYPE } from "./consts"
 
 export interface ITranslateResult {
     l: string
@@ -7,11 +7,11 @@ export interface ITranslateResult {
     errorCode: string
     translation: string[]
     web?: ITranslateResultWebItem[]
-    basic?: ITranslateResultBasicItem,
+    basic?: ITranslateResultBasicItem
 }
 
 export interface ITranslateReformatResult {
-    type?: string,
+    type?: string
     children?: ITranslateReformatResultItem[]
 }
 
@@ -30,8 +30,8 @@ export interface ITranslateResultWebItem {
 export interface ITranslateResultBasicItem {
     explains: string[]
     phonetic?: string
-    'us-phonetic': string
-    'uk-phonetic': string
+    "us-phonetic": string
+    "uk-phonetic": string
 }
 
 export interface IPreferences {
