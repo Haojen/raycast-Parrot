@@ -14,19 +14,18 @@
 4. Quick translation to another language
 
 ## Documents
-### Copy Text
+### Copy
 
 All copy items in Action Panel, you can click it or use `cmd` + `k` to expand it.
 
-#### 1. lowerCamelCase Mode
-use ```>``` before query text to copy translate results, example `> Hola`
+#### 1. lowerCamelCase
+Use ```>``` before query text to copy translate results, for example: `> Hola`
 
-#### 2. ALL_UPPERCASE Mode
-use ```>>``` before query text to copy translate result, example `>> Hola`
-
-> lowerCamelCase and UPPERCASE only for Alphabet
+#### 2. ALL_UPPERCASE
+Use ```>>``` before query text to copy translate result, for example: `>> Hola`
 
 ### Text to Speech-Language(TTS) List
+You can play Query Text and Results Text
 
 |Language| Voice | Default |
 | -----------| ----------- | ----------- |
@@ -74,7 +73,7 @@ or you can submit an issue.
 |412|  Long requests are too frequent. Please visit later|
 
 ## Default Config
-We provide the default token down below, but they maybe have a limit request server, so you should try registering your App ID and App Key go to [Youdao (中文))](https://ai.youdao.com/#/)
+We provide the default token down below, but they maybe have a limit request server, so you should try registering your App-ID and App-Key go to [Youdao (中文))](https://ai.youdao.com/#/)
 
 App ID: *0d68776be7e9be0b*
 
