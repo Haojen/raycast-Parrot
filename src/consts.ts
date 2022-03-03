@@ -36,7 +36,7 @@ export const LANGUAGE_LIST:ILanguageListItem[] = [
     {
         languageId: 'es',
         languageTitle: 'Spanish',
-        languageVoice: ['Diego', 'Jorge', 'Juan', 'Monica', 'Paulina']
+        languageVoice: ['Jorge', 'Juan', 'Diego', 'Monica', 'Paulina']
     },
     {
         languageId: 'pt',
