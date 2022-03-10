@@ -24,40 +24,40 @@ export function ActionCopyListSection(props: IActionCopyListSection) {
         if (props.copyMode === COPY_TYPE.Uppercase) {
             const SEPARATOR = "_"
             return textArray
-              .map((text) => {
-                  return text.toUpperCase()
-              })
-              .join(SEPARATOR)
+                .map((text) => {
+                    return text.toUpperCase()
+                })
+                .join(SEPARATOR)
         } else if (props.copyMode === COPY_TYPE.LowercaseCamelCase && textArray.length > 1) {
             return textArray
-              .map((text, idx) => {
-                  if (idx === 0) return text.toLowerCase()
+                .map((text, idx) => {
+                    if (idx === 0) return text.toLowerCase()
 
-                  const firstLetter = text.slice(0, 1).toUpperCase()
-                  return firstLetter + text.slice(1, text.length)
-              })
-              .join("")
+                    const firstLetter = text.slice(0, 1).toUpperCase()
+                    return firstLetter + text.slice(1, text.length)
+                })
+                .join("")
         }
 
         return text
     }
 
     return (
-      <ActionPanel.Section>
-          {finalTextArray.map((textItem, key) => {
-              const title = changeTextCopyStyle(textItem.title)
-              const value = changeTextCopyStyle(textItem.value)
-              return (
-                <Action.CopyToClipboard
-                  onCopy={() => preferences.isAutomaticPaste && Clipboard.paste(textItem.value)}
-                  shortcut={{ modifiers: ["cmd"], key: shortcutKeyEquivalent[key] }}
-                  title={`Copy ${title}`}
-                  content={value}
-                  key={key}
-                />
-              )
-          })}
-      </ActionPanel.Section>
+        <ActionPanel.Section>
+            {finalTextArray.map((textItem, key) => {
+                const title = changeTextCopyStyle(textItem.title)
+                const value = changeTextCopyStyle(textItem.value)
+                return (
+                    <Action.CopyToClipboard
+                        onCopy={() => preferences.isAutomaticPaste && Clipboard.paste(textItem.value)}
+                        shortcut={{ modifiers: ["cmd"], key: shortcutKeyEquivalent[key] }}
+                        title={`Copy ${title}`}
+                        content={value}
+                        key={key}
+                    />
+                )
+            })}
+        </ActionPanel.Section>
     )
 }
 
@@ -85,62 +85,61 @@ export class ListActionPanel extends Component<IListItemActionPanelItem> {
     render() {
         const playSoundIcon = Icon.Message
         return (
-          <ActionPanel>
-              <ActionCopyListSection copyText={this.props.copyText} copyMode={this.props.copyMode} />
-              {
-                  (this.props.currentFromLanguage || this.props.currentTargetLanguage) &&
-                  this.props.queryText && this.props.copyText &&
-                  <ActionPanel.Section title="Play Sound">
-                      <Action
-                        title="Play Query Text Sound"
-                        icon={playSoundIcon}
-                        onAction={() =>
-                          this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.languageId)
-                        }
-                      />
-                      <Action
-                        title="Play Result Text Sound"
-                        icon={playSoundIcon}
-                        onAction={() =>
-                          this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.languageId)
-                        }
-                      />
-                  </ActionPanel.Section>
-              }
-              {
-                  this.props.queryText && this.props.copyText &&
-                  <ActionPanel.Section title="Language">
-                      {LANGUAGE_LIST.map((region) => {
-                          return (
+            <ActionPanel>
+                <ActionCopyListSection copyText={this.props.copyText} copyMode={this.props.copyMode} />
+                {(this.props.currentFromLanguage || this.props.currentTargetLanguage) &&
+                    this.props.queryText &&
+                    this.props.copyText && (
+                        <ActionPanel.Section title="Play Sound">
                             <Action
-                              key={region.languageId}
-                              title={region.languageTitle}
-                              onAction={() => this.props.onLanguageUpdate(region)}
-                              icon={
-                                  this.props.currentTargetLanguage?.languageId === region.languageId
-                                    ? Icon.ArrowRight
-                                    : Icon.Globe
-                              }
+                                title="Play Query Text Sound"
+                                icon={playSoundIcon}
+                                onAction={() =>
+                                    this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.languageId)
+                                }
                             />
-                          )
-                      })}
-                  </ActionPanel.Section>
-              }
-              <ActionPanel.Section title="Others">
-                  <Action.OpenInBrowser
-                    icon={Icon.QuestionMark}
-                    title="Feedback"
-                    url="https://github.com/Haojen/raycast-Parrot"
-                  />
-                  {this.props.currentFromLanguage && this.props.currentTargetLanguage && this.props.copyText && (
+                            <Action
+                                title="Play Result Text Sound"
+                                icon={playSoundIcon}
+                                onAction={() =>
+                                    this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.languageId)
+                                }
+                            />
+                        </ActionPanel.Section>
+                    )}
+                {this.props.queryText && this.props.copyText && (
+                    <ActionPanel.Section title="Language">
+                        {LANGUAGE_LIST.map((region) => {
+                            return (
+                                <Action
+                                    key={region.languageId}
+                                    title={region.languageTitle}
+                                    onAction={() => this.props.onLanguageUpdate(region)}
+                                    icon={
+                                        this.props.currentTargetLanguage?.languageId === region.languageId
+                                            ? Icon.ArrowRight
+                                            : Icon.Globe
+                                    }
+                                />
+                            )
+                        })}
+                    </ActionPanel.Section>
+                )}
+                <ActionPanel.Section title="Others">
                     <Action.OpenInBrowser
-                      icon={Icon.Link}
-                      title="See Google Translate Results"
-                      url={this.getGoogleTranslateURL()}
+                        icon={Icon.QuestionMark}
+                        title="Feedback"
+                        url="https://github.com/Haojen/raycast-Parrot"
                     />
-                  )}
-              </ActionPanel.Section>
-          </ActionPanel>
+                    {this.props.currentFromLanguage && this.props.currentTargetLanguage && this.props.copyText && (
+                        <Action.OpenInBrowser
+                            icon={Icon.Link}
+                            title="See Google Translate Results"
+                            url={this.getGoogleTranslateURL()}
+                        />
+                    )}
+                </ActionPanel.Section>
+            </ActionPanel>
         )
     }
 }
