@@ -1,17 +1,21 @@
-import { COPY_TYPE } from "./consts"
-import { ListActionPanel } from "./components"
-import { Fragment, useEffect, useState } from "react"
-import { Action, ActionPanel, getPreferenceValues, Icon, List } from "@raycast/api"
-import { ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult } from "./types"
+import { COPY_TYPE } from "./consts";
+import { ListActionPanel } from "./components";
+import { Fragment, useEffect, useState } from "react";
+import { Action, ActionPanel, Color, getPreferenceValues, Icon, List } from "@raycast/api";
+import { ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult } from "./types";
 import {
     requestYoudaoAPI,
     getItemFromLanguageList,
     reformatTranslateResult,
-    detectIsUppercaseCopyOrLowerCaseCopy,
     removeDetectCopyModeSymbol,
-} from "./shared.func"
+    detectIsUppercaseCopyOrLowerCaseCopy
+} from "./shared.func";
+
+const DELAY_FETCH_DURATION = 900
+const DELAY_FETCH_DURATION2 = 900
 
 let fetchResultStateCode = "-1"
+let delayFetchTranslateTime = DELAY_FETCH_DURATION // default is 200ms, when quick switch language is 800ms
 let delayFetchTranslateAPITimer: NodeJS.Timeout
 
 export default function () {
@@ -22,7 +26,22 @@ export default function () {
     const defaultLanguage1 = getItemFromLanguageList(preferences.lang1)
     const defaultLanguage2 = getItemFromLanguageList(preferences.lang2)
 
-    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<ILanguageListItem>(defaultLanguage1)
+    if (defaultLanguage1.languageId === defaultLanguage2.languageId) {
+        return (
+          <List>
+              <List.Item
+                title={"Language Conflict"}
+                icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
+                subtitle={"Your first Language with second Language must be different."}/>
+          </List>
+        )
+    }
+
+    const isAutoDetect = defaultLanguage1.languageId === ""
+    const defaultTargetLanguage = isAutoDetect ? defaultLanguage2 : defaultLanguage1
+
+    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<ILanguageListItem>(defaultTargetLanguage)
+
     const [translateResultState, updateTranslateResultState] = useState<ITranslateReformatResult[]>()
 
     const [translateFromLanguageState, updateTranslateFromLanguageState] = useState<ILanguageListItem>()
@@ -33,26 +52,26 @@ export default function () {
     useEffect(() => {
         if (!inputState) return // Prevent when mounted run
 
-        clearTimeout(delayFetchTranslateAPITimer)
-        delayFetchTranslateAPITimer = setTimeout(() => {
-            requestYoudaoAPI(inputState, translateTargetLanguage.languageId).then((res) => {
-                const resData: ITranslateResult = res.data
+        updateLoadingState(true)
+        delayFetchTranslateTime = DELAY_FETCH_DURATION
+        requestYoudaoAPI(inputState, translateTargetLanguage.languageId).then((res) => {
+            const resData: ITranslateResult = res.data
 
-                const [a, b] = resData.l.split("2") // en2zh
+            const [a, b] = resData.l.split("2") // en2zh
 
-                if (a === b) {
-                    updateTranslateTargetLanguage(a === preferences.lang1 ? defaultLanguage2 : defaultLanguage1)
-                    return
-                }
+            if (a === b) {
+                delayFetchTranslateTime = DELAY_FETCH_DURATION2
+                updateTranslateTargetLanguage(a === preferences.lang1 ? defaultLanguage2 : defaultLanguage1)
+                return
+            }
 
-                updateLoadingState(false)
-                fetchResultStateCode = res.data.errorCode
-                updateTranslateResultState(reformatTranslateResult(resData))
+            updateLoadingState(false)
+            fetchResultStateCode = res.data.errorCode
+            updateTranslateResultState(reformatTranslateResult(resData))
 
-                updateTranslateFromLanguageState(getItemFromLanguageList(a))
-                updateCurrentTargetLanguageState(getItemFromLanguageList(b))
-            })
-        }, 900)
+            updateTranslateFromLanguageState(getItemFromLanguageList(a))
+            updateCurrentTargetLanguageState(getItemFromLanguageList(b))
+        })
     }, [inputState, translateTargetLanguage])
 
     function ListDetail() {
@@ -95,9 +114,9 @@ export default function () {
         // TODO: Try use Detail
         return (
             <List.Item
-                icon={Icon.XmarkCircle}
                 title={`Sorry! We have some problems..`}
                 subtitle={`code: ${fetchResultStateCode}`}
+                icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
                 actions={
                     <ActionPanel>
                         <Action.OpenInBrowser
@@ -111,24 +130,24 @@ export default function () {
         )
     }
     function onInputChangeEvt(queryText: string) {
+        updateLoadingState(false)
         clearTimeout(delayFetchTranslateAPITimer)
 
         const text = queryText.trim()
         if (text.length > 0) {
-            updateCopyModeState(() => {
-                const freshCopyModeState = detectIsUppercaseCopyOrLowerCaseCopy(text)
+            delayFetchTranslateAPITimer = setTimeout(() => {
+                updateCopyModeState(() => {
+                    const freshCopyModeState = detectIsUppercaseCopyOrLowerCaseCopy(text)
 
-                const freshInputValue = removeDetectCopyModeSymbol(text, freshCopyModeState)
-                updateLoadingState(freshInputValue !== inputState)
-                updateInputState(freshInputValue)
+                    const freshInputValue = removeDetectCopyModeSymbol(text, freshCopyModeState)
+                    updateInputState(freshInputValue)
 
-                return freshCopyModeState
-            })
-
+                    return freshCopyModeState
+                })
+            }, delayFetchTranslateTime)
             return
         }
 
-        updateLoadingState(false)
         updateTranslateResultState([])
     }
 
@@ -136,17 +155,16 @@ export default function () {
         <List
             isLoading={isLoadingState}
             searchBarPlaceholder={"Translate to"}
-            onSearchTextChange={(inputText) => onInputChangeEvt(inputText)}
             actions={
                 <ListActionPanel
-                    queryText={inputState}
-                    copyMode={copyModeState}
-                    currentFromLanguage={translateFromLanguageState}
-                    currentTargetLanguage={currentTargetLanguageState}
-                    onLanguageUpdate={updateTranslateTargetLanguage}
+                  queryText={inputState}
+                  copyMode={copyModeState}
+                  currentFromLanguage={translateFromLanguageState}
+                  onLanguageUpdate={updateTranslateTargetLanguage}
+                  currentTargetLanguage={currentTargetLanguageState}
                 />
             }
-        >
+            onSearchTextChange={onInputChangeEvt}>
             <ListDetail />
         </List>
     )
