@@ -1,22 +1,20 @@
-import { COPY_TYPE } from "./consts";
-import { ListActionPanel } from "./components";
-import { Fragment, useEffect, useState } from "react";
-import { Action, ActionPanel, Color, getPreferenceValues, Icon, List } from "@raycast/api";
-import { ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult } from "./types";
+import { COPY_TYPE } from "./consts"
+import { Fragment, useEffect, useState } from "react"
+import { ActionFeedback, ListActionPanel } from "./components"
+import { Action, ActionPanel, Color, getPreferenceValues, Icon, List } from "@raycast/api"
+import { ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult } from "./types"
 import {
     requestYoudaoAPI,
     getItemFromLanguageList,
     reformatTranslateResult,
     removeDetectCopyModeSymbol,
-    detectIsUppercaseCopyOrLowerCaseCopy
-} from "./shared.func";
-
-const DELAY_FETCH_DURATION = 900
-const DELAY_FETCH_DURATION2 = 900
+    detectIsUppercaseCopyOrLowerCaseCopy,
+} from "./shared.func"
 
 let fetchResultStateCode = "-1"
-let delayFetchTranslateTime = DELAY_FETCH_DURATION // default is 200ms, when quick switch language is 800ms
+let isUserChosenTargetLanguage = false
 let delayFetchTranslateAPITimer: NodeJS.Timeout
+let delayUpdateTargetLanguageTimer: NodeJS.Timeout
 
 export default function () {
     const [inputState, updateInputState] = useState<string>()
@@ -28,49 +26,59 @@ export default function () {
 
     if (defaultLanguage1.languageId === defaultLanguage2.languageId) {
         return (
-          <List>
-              <List.Item
-                title={"Language Conflict"}
-                icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
-                subtitle={"Your first Language with second Language must be different."}/>
-          </List>
+            <List>
+                <List.Item
+                    title={"Language Conflict"}
+                    icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
+                    subtitle={"Your first Language with second Language must be different."}
+                />
+            </List>
         )
     }
 
-    const isAutoDetect = defaultLanguage1.languageId === ""
-    const defaultTargetLanguage = isAutoDetect ? defaultLanguage2 : defaultLanguage1
-
-    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<ILanguageListItem>(defaultTargetLanguage)
-
     const [translateResultState, updateTranslateResultState] = useState<ITranslateReformatResult[]>()
 
-    const [translateFromLanguageState, updateTranslateFromLanguageState] = useState<ILanguageListItem>()
-    const [currentTargetLanguageState, updateCurrentTargetLanguageState] = useState<ILanguageListItem>()
+    const [currentFromLanguageState, updateCurrentFromLanguageState] = useState<ILanguageListItem>()
+    const [translateTargetLanguage, updateTranslateTargetLanguage] = useState<ILanguageListItem>(defaultLanguage1)
 
     const [copyModeState, updateCopyModeState] = useState<COPY_TYPE>(COPY_TYPE.Normal)
 
     useEffect(() => {
-        if (!inputState) return // Prevent when mounted run
+        if (!inputState) return // Prevent when first mounted run
 
         updateLoadingState(true)
-        delayFetchTranslateTime = DELAY_FETCH_DURATION
+        clearTimeout(delayUpdateTargetLanguageTimer)
+
+        // default is X -> A
         requestYoudaoAPI(inputState, translateTargetLanguage.languageId).then((res) => {
             const resData: ITranslateResult = res.data
 
-            const [a, b] = resData.l.split("2") // en2zh
+            const [from, to] = resData.l.split("2") // en2zh
 
-            if (a === b) {
-                delayFetchTranslateTime = DELAY_FETCH_DURATION2
-                updateTranslateTargetLanguage(a === preferences.lang1 ? defaultLanguage2 : defaultLanguage1)
-                return
+            if (!isUserChosenTargetLanguage) {
+                // A -> B with B <- A
+                if (from === to) {
+                    delayUpdateTargetLanguageTimer = setTimeout(() => {
+                        updateTranslateTargetLanguage(from === preferences.lang2 ? defaultLanguage1 : defaultLanguage2)
+                    }, 900)
+                    return
+                }
+                // X -> A
+                else if (
+                    from !== preferences.lang1 &&
+                    translateTargetLanguage.languageId !== defaultLanguage1.languageId
+                ) {
+                    delayUpdateTargetLanguageTimer = setTimeout(() => {
+                        updateTranslateTargetLanguage(defaultLanguage1)
+                    }, 900)
+                    return
+                }
             }
 
             updateLoadingState(false)
             fetchResultStateCode = res.data.errorCode
             updateTranslateResultState(reformatTranslateResult(resData))
-
-            updateTranslateFromLanguageState(getItemFromLanguageList(a))
-            updateCurrentTargetLanguageState(getItemFromLanguageList(b))
+            updateCurrentFromLanguageState(getItemFromLanguageList(from))
         })
     }, [inputState, translateTargetLanguage])
 
@@ -96,9 +104,12 @@ export default function () {
                                                     queryText={inputState}
                                                     copyMode={copyModeState}
                                                     copyText={item?.subtitle || item.title}
-                                                    currentFromLanguage={translateFromLanguageState}
-                                                    onLanguageUpdate={updateTranslateTargetLanguage}
-                                                    currentTargetLanguage={currentTargetLanguageState}
+                                                    currentFromLanguage={currentFromLanguageState}
+                                                    onLanguageUpdate={(value) => {
+                                                        isUserChosenTargetLanguage = true
+                                                        updateTranslateTargetLanguage(value)
+                                                    }}
+                                                    currentTargetLanguage={translateTargetLanguage}
                                                 />
                                             }
                                         />
@@ -111,7 +122,6 @@ export default function () {
             )
         }
 
-        // TODO: Try use Detail
         return (
             <List.Item
                 title={`Sorry! We have some problems..`}
@@ -144,7 +154,7 @@ export default function () {
 
                     return freshCopyModeState
                 })
-            }, delayFetchTranslateTime)
+            }, 400)
             return
         }
 
@@ -155,16 +165,13 @@ export default function () {
         <List
             isLoading={isLoadingState}
             searchBarPlaceholder={"Translate to"}
+            onSearchTextChange={onInputChangeEvt}
             actions={
-                <ListActionPanel
-                  queryText={inputState}
-                  copyMode={copyModeState}
-                  currentFromLanguage={translateFromLanguageState}
-                  onLanguageUpdate={updateTranslateTargetLanguage}
-                  currentTargetLanguage={currentTargetLanguageState}
-                />
+                <ActionPanel>
+                    <ActionFeedback />
+                </ActionPanel>
             }
-            onSearchTextChange={onInputChangeEvt}>
+        >
             <ListDetail />
         </List>
     )
