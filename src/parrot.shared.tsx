@@ -4,52 +4,7 @@ import querystring from "node:querystring"
 import { getPreferenceValues } from "@raycast/api"
 import { COPY_TYPE, LANGUAGE_LIST } from "./consts"
 
-import {
-    ILanguageListItem,
-    IPreferences,
-    IReformatTranslateResult,
-    ITranslateReformatResult,
-    ITranslateResult,
-} from "./types"
-
-export function truncate(string: string, length = 16, separator = "..") {
-    if (string.length <= length) return string
-
-    return string.substring(0, length) + separator
-}
-
-export function getItemFromLanguageList(value: string): ILanguageListItem {
-    for (const langItem of LANGUAGE_LIST) {
-        if (langItem.languageId === value) {
-            return langItem
-        }
-    }
-
-    return {
-        languageId: "",
-        languageTitle: "",
-        languageVoice: [""],
-    }
-}
-
-export function reformatCopyTextArray(data: string[], limitResultAmount = 10): IReformatTranslateResult[] {
-    const dataLength = data?.length - 1
-    let finalData: string[] = data
-    if (limitResultAmount > 0 && dataLength >= limitResultAmount) {
-        finalData = data.slice(0, limitResultAmount - 1)
-        finalData.push(data[dataLength])
-    }
-
-    const finalDataLength = finalData.length - 1
-    return finalData.map((text, idx) => {
-        return {
-            title: finalDataLength === idx && idx > 0 ? "All" : truncate(text),
-            value: text,
-        }
-    })
-}
-
-export function reformatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
+export function formatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
     const reformatData: ITranslateReformatResult[] = []
 
     reformatData.push({
@@ -80,15 +35,30 @@ export function reformatTranslateResult(data: ITranslateResult): ITranslateRefor
             return {
                 title: webResultItem.key,
                 key: webResultItem.key + idx,
-                subtitle: useSymbolSegmentationArrayText(webResultItem.value),
+                subtitle: webResultItem.value.join("；"),
             }
         }),
     })
 
     return reformatData
 }
+
+export function getLanguageListItem(value: string): ILanguageListItem {
+    for (const langItem of LANGUAGE_LIST) {
+        if (langItem.languageId === value) {
+            return langItem
+        }
+    }
+
+    return {
+        languageId: "",
+        languageTitle: "",
+        languageVoice: [""],
+    }
+}
+
 // API Document https://ai.youdao.com/DOCSIRMA/html/自然语言翻译/API文档/文本翻译服务/文本翻译服务-API文档.html
-export function requestYoudaoAPI(queryText: string, fromLanguage: string, targetLanguage: string): Promise<any> {
+export function fetchAPI(queryText: string, fromLanguage: string, targetLanguage: string): Promise<any> {
     function truncate(q: string): string {
         const len = q.length
         return len <= 20 ? q : q.substring(0, 10) + len + q.substring(len - 10, len)
@@ -119,7 +89,7 @@ export function requestYoudaoAPI(queryText: string, fromLanguage: string, target
     )
 }
 
-export function detectIsUppercaseCopyOrLowerCaseCopy(queryText = ""): COPY_TYPE {
+export function detectCopyMode(queryText = ""): COPY_TYPE {
     const isFirstRightArrow = queryText[0] === ">"
     const isSecondRightArrow = queryText[1] === ">"
 
@@ -130,7 +100,7 @@ export function detectIsUppercaseCopyOrLowerCaseCopy(queryText = ""): COPY_TYPE 
     return COPY_TYPE.Normal
 }
 
-export function removeDetectCopyModeSymbol(queryText: string, copyMode: COPY_TYPE): string {
+export function removeCopyFlag(queryText: string, copyMode: COPY_TYPE): string {
     if (copyMode === COPY_TYPE.LowercaseCamelCase) {
         return queryText.substring(1, queryText.length).trim()
     }
@@ -139,8 +109,4 @@ export function removeDetectCopyModeSymbol(queryText: string, copyMode: COPY_TYP
     }
 
     return queryText
-}
-
-export function useSymbolSegmentationArrayText(textArray: string[]): string {
-    return textArray.join("；")
 }

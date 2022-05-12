@@ -1,15 +1,10 @@
 import { COPY_TYPE } from "./consts"
-import { Fragment, useEffect, useState } from "react"
-import { ActionFeedback, ListActionPanel } from "./components"
-import { Action, ActionPanel, Color, getPreferenceValues, Icon, List } from "@raycast/api"
-import { ILanguageListItem, IPreferences, ITranslateReformatResult, ITranslateResult } from "./types"
-import {
-    requestYoudaoAPI,
-    getItemFromLanguageList,
-    reformatTranslateResult,
-    removeDetectCopyModeSymbol,
-    detectIsUppercaseCopyOrLowerCaseCopy,
-} from "./shared.func"
+import { useEffect, useState } from "react"
+import ActionFeedback from "./ActionFeedBack"
+import { TranslateError, LanguageConflict } from "./TranslateError"
+import TranslateResult from "./TranslateResult"
+import { ActionPanel, getPreferenceValues, Icon, List } from "@raycast/api"
+import { fetchAPI, getLanguageListItem, removeCopyFlag, detectCopyMode, formatTranslateResult } from "./parrot.shared"
 
 let fetchResultStateCode = "-1"
 let delayFetchTranslateAPITimer: NodeJS.Timeout
@@ -20,8 +15,8 @@ export default function () {
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
 
     const preferences: IPreferences = getPreferenceValues()
-    const defaultLanguage1 = getItemFromLanguageList(preferences.lang1)
-    const defaultLanguage2 = getItemFromLanguageList(preferences.lang2)
+    const defaultLanguage1 = getLanguageListItem(preferences.lang1)
+    const defaultLanguage2 = getLanguageListItem(preferences.lang2)
 
     let delayRequestTime = parseInt(preferences.delayFetchTranslateAPITime) || 400
 
@@ -32,15 +27,7 @@ export default function () {
     }
 
     if (defaultLanguage1.languageId === defaultLanguage2.languageId) {
-        return (
-            <List>
-                <List.Item
-                    title={"Language Conflict"}
-                    icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
-                    subtitle={"Your first Language with second Language must be different."}
-                />
-            </List>
-        )
+        return <LanguageConflict />
     }
 
     const [translateResultState, updateTranslateResultState] = useState<ITranslateReformatResult[]>()
@@ -52,7 +39,7 @@ export default function () {
     const [copyModeState, updateCopyModeState] = useState<COPY_TYPE>(COPY_TYPE.Normal)
 
     function translate(fromLanguage: string, targetLanguage: string) {
-        requestYoudaoAPI(inputState!, fromLanguage, targetLanguage).then((res) => {
+        fetchAPI(inputState!, fromLanguage, targetLanguage).then((res) => {
             const resData: ITranslateResult = res.data
 
             const [from, to] = resData.l.split("2") // from2to
@@ -80,8 +67,8 @@ export default function () {
 
             updateLoadingState(false)
             fetchResultStateCode = res.data.errorCode
-            updateTranslateResultState(reformatTranslateResult(resData))
-            updateCurrentFromLanguageState(getItemFromLanguageList(from))
+            updateTranslateResultState(formatTranslateResult(resData))
+            updateCurrentFromLanguageState(getLanguageListItem(from))
         })
     }
 
@@ -93,64 +80,6 @@ export default function () {
         translate("auto", translateTargetLanguage.languageId)
     }, [inputState])
 
-    function ListDetail() {
-        if (fetchResultStateCode === "-1") return null
-
-        if (fetchResultStateCode === "0") {
-            return (
-                <Fragment>
-                    {translateResultState?.map((result, idx) => {
-                        return (
-                            <List.Section key={idx} title={result.type}>
-                                {result.children?.map((item) => {
-                                    return (
-                                        <List.Item
-                                            key={item.key}
-                                            icon={Icon.Text}
-                                            title={item.title}
-                                            subtitle={item?.subtitle}
-                                            accessoryTitle={item.phonetic}
-                                            actions={
-                                                <ListActionPanel
-                                                    queryText={inputState}
-                                                    copyMode={copyModeState}
-                                                    copyText={item?.subtitle || item.title}
-                                                    currentFromLanguage={currentFromLanguageState}
-                                                    currentTargetLanguage={currentTargetLanguage}
-                                                    onLanguageUpdate={(value) => {
-                                                        setCurrentTargetLanguage(value)
-                                                        updateTranslateTargetLanguage(value)
-                                                        translate("auto", value.languageId)
-                                                    }}
-                                                />
-                                            }
-                                        />
-                                    )
-                                })}
-                            </List.Section>
-                        )
-                    })}
-                </Fragment>
-            )
-        }
-
-        return (
-            <List.Item
-                title={`Sorry! We have some problems..`}
-                subtitle={`code: ${fetchResultStateCode}`}
-                icon={{ source: Icon.XmarkCircle, tintColor: Color.Red }}
-                actions={
-                    <ActionPanel>
-                        <Action.OpenInBrowser
-                            title="Help"
-                            icon={Icon.QuestionMark}
-                            url="https://github.com/Haojen/raycast-Parrot#error-code-information"
-                        />
-                    </ActionPanel>
-                }
-            />
-        )
-    }
     function onInputChangeEvt(queryText: string) {
         updateLoadingState(false)
         clearTimeout(delayFetchTranslateAPITimer)
@@ -159,9 +88,9 @@ export default function () {
         if (text.length > 0) {
             delayFetchTranslateAPITimer = setTimeout(() => {
                 updateCopyModeState(() => {
-                    const freshCopyModeState = detectIsUppercaseCopyOrLowerCaseCopy(text)
+                    const freshCopyModeState = detectCopyMode(text)
 
-                    const freshInputValue = removeDetectCopyModeSymbol(text, freshCopyModeState)
+                    const freshInputValue = removeCopyFlag(text, freshCopyModeState)
                     updateInputState(freshInputValue)
 
                     return freshCopyModeState
@@ -171,6 +100,27 @@ export default function () {
         }
 
         updateTranslateResultState([])
+    }
+
+    function ListDetail() {
+        if (fetchResultStateCode === "-1") return null
+
+        if (fetchResultStateCode === "0") {
+            return (
+                <TranslateResult
+                    doTranslate={translate}
+                    inputState={inputState}
+                    copyModeState={copyModeState}
+                    translateResultState={translateResultState}
+                    currentTargetLanguage={currentTargetLanguage}
+                    currentFromLanguageState={currentFromLanguageState}
+                    setCurrentTargetLanguage={setCurrentTargetLanguage}
+                    updateTranslateTargetLanguage={updateTranslateTargetLanguage}
+                />
+            )
+        }
+
+        return <TranslateError errorCode={fetchResultStateCode} />
     }
 
     return (

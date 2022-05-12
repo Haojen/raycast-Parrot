@@ -1,9 +1,7 @@
-import { ILanguageListItem } from "./types"
-
 export enum COPY_TYPE {
-    Normal,
-    Uppercase,
-    LowercaseCamelCase,
+    Normal = "Normal",
+    Uppercase = "Uppercase",
+    LowercaseCamelCase = "LowercaseCamelCase",
 }
 
 export const LANGUAGE_LIST: ILanguageListItem[] = [
