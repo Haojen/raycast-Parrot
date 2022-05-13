@@ -11,7 +11,7 @@ export function formatTranslateResult(data: ITranslateResult): ITranslateReforma
     LANGUAGE_LIST.some(item => item.languageId === from && (from = item.languageTitle))
     LANGUAGE_LIST.some(item => item.languageId === to && (to = item.languageTitle))
     reformatData.push({
-        type: `${from} -> ${to}` ,
+        type: `${from} -> ${to}`,
         children: data.translation?.map((text, idx) => {
             return {
                 title: text,
@@ -34,7 +34,7 @@ export function formatTranslateResult(data: ITranslateResult): ITranslateReforma
     })
 
     reformatData.push({
-        type: "Other Results",
+        type: "Derivatives",
         children: data.web?.map((webResultItem, idx) => {
             return {
                 title: webResultItem.key,
@@ -54,11 +54,7 @@ export function getLanguageListItem(value: string): ILanguageListItem {
         }
     }
 
-    return {
-        languageId: "",
-        languageTitle: "",
-        languageVoice: [""],
-    }
+    return { languageId: "", languageTitle: "", languageVoice: [""] }
 }
 
 // API Document https://ai.youdao.com/DOCSIRMA/html/自然语言翻译/API文档/文本翻译服务/文本翻译服务-API文档.html
@@ -83,6 +79,7 @@ export function fetchAPI(queryText: string, fromLanguage: string, targetLanguage
         querystring.stringify({
             sign,
             salt,
+            strict: true,
             from: fromLanguage,
             signType: "v3",
             q: queryText,
