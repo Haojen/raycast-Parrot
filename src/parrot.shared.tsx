@@ -6,8 +6,12 @@ import { COPY_TYPE, LANGUAGE_LIST } from "./consts"
 
 export function formatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
     const reformatData: ITranslateReformatResult[] = []
+    let [from, to] = data.l.split('2')
 
+    LANGUAGE_LIST.some(item => item.languageId === from && (from = item.languageTitle))
+    LANGUAGE_LIST.some(item => item.languageId === to && (to = item.languageTitle))
     reformatData.push({
+        type: `${from} -> ${to}` ,
         children: data.translation?.map((text, idx) => {
             return {
                 title: text,
