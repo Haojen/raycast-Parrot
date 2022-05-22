@@ -13,6 +13,7 @@ let delayUpdateTargetLanguageTimer: NodeJS.Timeout
 export default function () {
     const [inputState, updateInputState] = useState<string>()
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
+    const [isShowListDetail, setIsShowListDetail] = useState<boolean>(false)
 
     const preferences: IPreferences = getPreferenceValues()
     const defaultLanguage1 = getLanguageListItem(preferences.lang1)
@@ -111,6 +112,7 @@ export default function () {
                     doTranslate={translate}
                     inputState={inputState}
                     copyModeState={copyModeState}
+                    setShowDetail={setIsShowListDetail}
                     translateResultState={translateResultState}
                     currentTargetLanguage={currentTargetLanguage}
                     currentFromLanguageState={currentFromLanguageState}
@@ -125,6 +127,7 @@ export default function () {
 
     return (
         <List
+            isShowingDetail={isShowListDetail}
             isLoading={isLoadingState}
             searchBarPlaceholder={"Translate text"}
             onSearchTextChange={onInputChangeEvt}

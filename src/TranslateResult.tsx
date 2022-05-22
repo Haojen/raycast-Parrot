@@ -13,6 +13,7 @@ interface ITranslateResult {
     translateResultState?: ITranslateReformatResult[]
     setCurrentTargetLanguage: (lang: ILanguageListItem) => void
     updateTranslateTargetLanguage: (lang: ILanguageListItem) => void
+    setShowDetail: (state: boolean) => void
 }
 
 function truncate(string: string, length = 16, separator = "..") {
@@ -173,6 +174,12 @@ export default function TranslateResult(props: ITranslateResult) {
                 return (
                     <List.Section key={idx} title={result.type}>
                         {result.children?.map((item) => {
+                            if (item.title.length > 50) {
+                                props.setShowDetail(true)
+                            }
+                            else {
+                                props.setShowDetail(false)
+                            }
                             return (
                                 <List.Item
                                     key={item.key}
@@ -180,6 +187,9 @@ export default function TranslateResult(props: ITranslateResult) {
                                     title={item.title}
                                     subtitle={item?.subtitle}
                                     accessoryTitle={item.phonetic}
+                                    detail={
+                                        <List.Item.Detail markdown={item.title}/>
+                                    }
                                     actions={
                                         <ListActionPanel
                                             queryText={props.inputState}
