@@ -273,13 +273,31 @@
             "placeholder": "Range 50-600ms, default 400ms"
         },
         {
-            "title": "Others",
+            "title": "Automatic Paste",
             "name": "isAutomaticPaste",
             "type": "checkbox",
-            "label": "Automatic Paste",
+            "label": "Enable",
             "required": false,
             "default": true,
             "description": "When you copy automatic paste to focus"
+        },
+        {
+            "title": "Quick Switch Language",
+            "name": "isQuickSwitchLanguage",
+            "type": "checkbox",
+            "label": "Enable",
+            "required": false,
+            "default": true,
+            "description": "Show quick switch Language in ActionPanel"
+        },
+        {
+            "title": "Play TTS",
+            "name": "isPlayTTS",
+            "type": "checkbox",
+            "label": "Enable",
+            "required": false,
+            "default": true,
+            "description": "Show Play Text to Speech button in ActionPanel"
         }
     ],
     "dependencies": {

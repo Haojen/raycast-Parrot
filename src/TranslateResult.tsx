@@ -50,7 +50,7 @@ function ActionCopyListSection(props: IActionCopyListSection) {
     copyTextArray.length > 1 && copyTextArray.push(props.copyText)
     const finalTextArray = reformatCopyTextArray(copyTextArray, 4)
 
-    const shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    // const shortcutKeyEquivalent: Keyboard.KeyEquivalent[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
     function changeTextCopyStyle(text: string): string {
         const textArray: string[] = text.split(" ")
@@ -83,7 +83,7 @@ function ActionCopyListSection(props: IActionCopyListSection) {
                 return (
                     <Action.CopyToClipboard
                         onCopy={() => preferences.isAutomaticPaste && Clipboard.paste(textItem.value)}
-                        shortcut={{ modifiers: ["cmd"], key: shortcutKeyEquivalent[key] }}
+                        // shortcut={{ modifiers: ["cmd"], key: [key] }}
                         title={`Copy ${title}`}
                         content={value}
                         key={key}
@@ -119,40 +119,46 @@ class ListActionPanel extends Component<IListItemActionPanelItem> {
         return (
             <ActionPanel>
                 <ActionCopyListSection copyText={this.props.copyText} copyMode={this.props.copyMode} />
-                <ActionPanel.Section title="Play Sound">
-                    <Action
-                        title="Play Query Text Sound"
-                        icon={Icon.Message}
-                        onAction={() =>
-                            this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.languageId)
-                        }
-                    />
-                    <Action
-                        title="Play Result Text Sound"
-                        icon={Icon.Message}
-                        onAction={() =>
-                            this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.languageId)
-                        }
-                    />
-                </ActionPanel.Section>
-                <ActionPanel.Section title="Target Language">
-                    {LANGUAGE_LIST.map((region) => {
-                        if (this.props.currentFromLanguage?.languageId === region.languageId) return null
+                {
+                    preferences.isPlayTTS &&
+                    <ActionPanel.Section title="Play Sound">
+                          <Action
+                            title="Play Query Text Sound"
+                            icon={Icon.Message}
+                            onAction={() =>
+                              this.onPlaySound(this.props?.queryText, this.props.currentFromLanguage?.languageId)
+                            }
+                          />
+                          <Action
+                            title="Play Result Text Sound"
+                            icon={Icon.Message}
+                            onAction={() =>
+                              this.onPlaySound(this.props.copyText, this.props.currentTargetLanguage?.languageId)
+                            }
+                          />
+                    </ActionPanel.Section>
+                }
+                {
+                    preferences.isQuickSwitchLanguage &&
+                    <ActionPanel.Section title="Target Language">
+                      {LANGUAGE_LIST.map((region) => {
+                          if (this.props.currentFromLanguage?.languageId === region.languageId) return null
 
-                        return (
+                          return (
                             <Action
-                                key={region.languageId}
-                                title={region.languageTitle}
-                                onAction={() => this.props.onLanguageUpdate(region)}
-                                icon={
-                                    this.props.currentTargetLanguage?.languageId === region.languageId
-                                        ? Icon.ArrowRight
-                                        : Icon.Globe
-                                }
+                              key={region.languageId}
+                              title={region.languageTitle}
+                              onAction={() => this.props.onLanguageUpdate(region)}
+                              icon={
+                                  this.props.currentTargetLanguage?.languageId === region.languageId
+                                    ? Icon.ArrowRight
+                                    : Icon.Globe
+                              }
                             />
-                        )
-                    })}
-                </ActionPanel.Section>
+                          )
+                      })}
+                  </ActionPanel.Section>
+                }
                 <ActionPanel.Section title="Others">
                     <ActionFeedback />
                     <Action.OpenInBrowser

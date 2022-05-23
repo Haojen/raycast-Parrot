@@ -42,6 +42,8 @@ interface IPreferences {
     appId: string
     appKey: string
     isAutomaticPaste: boolean
+    isPlayTTS: boolean
+    isQuickSwitchLanguage: boolean
     delayFetchTranslateAPITime: string
 }
 
