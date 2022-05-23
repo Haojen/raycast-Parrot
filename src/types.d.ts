@@ -1,4 +1,5 @@
 type COPY_TYPE = "Normal" | "Uppercase" | "LowercaseCamelCase"
+type RESULT_TYPE = 'Standard' | 'Detail' | 'Derivatives'
 
 interface ITranslateResult {
     l: string
@@ -11,8 +12,9 @@ interface ITranslateResult {
 }
 
 interface ITranslateReformatResult {
-    type?: string
-    children?: ITranslateReformatResultItem[]
+    type?: RESULT_TYPE
+    title?: string
+    children: ITranslateReformatResultItem[]
 }
 
 interface ITranslateReformatResultItem {

@@ -4,6 +4,12 @@ export enum COPY_TYPE {
     LowercaseCamelCase = "LowercaseCamelCase",
 }
 
+export enum RESULT_TYPE {
+    Standard = 'Standard',
+    Detail = 'Detail',
+    Derivatives = 'Derivatives'
+}
+
 export const LANGUAGE_LIST: ILanguageListItem[] = [
     {
         languageId: "zh-CHS",

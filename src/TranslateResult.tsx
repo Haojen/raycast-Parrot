@@ -1,8 +1,8 @@
 import { exec } from "child_process"
 import { Component, Fragment } from "react"
 import ActionFeedback from "./ActionFeedBack"
-import { COPY_TYPE, LANGUAGE_LIST } from "./consts"
-import { Action, ActionPanel, Clipboard, getPreferenceValues, Icon, Keyboard, List } from "@raycast/api"
+import { COPY_TYPE, LANGUAGE_LIST, RESULT_TYPE } from "./consts";
+import { Action, ActionPanel, Clipboard, Color, getPreferenceValues, Icon, Keyboard, List } from "@raycast/api";
 
 interface ITranslateResult {
     inputState?: string
@@ -13,7 +13,6 @@ interface ITranslateResult {
     translateResultState?: ITranslateReformatResult[]
     setCurrentTargetLanguage: (lang: ILanguageListItem) => void
     updateTranslateTargetLanguage: (lang: ILanguageListItem) => void
-    setShowDetail: (state: boolean) => void
 }
 
 function truncate(string: string, length = 16, separator = "..") {
@@ -171,25 +170,28 @@ export default function TranslateResult(props: ITranslateResult) {
     return (
         <Fragment>
             {props.translateResultState?.map((result, idx) => {
+                const iconMaps = {
+                    [RESULT_TYPE.Standard]: {
+                        source: Icon.Dot, tintColor: Color.Blue
+                    },
+                    [RESULT_TYPE.Detail]: {
+                        source: Icon.Dot, tintColor: Color.Blue
+                    },
+                    [RESULT_TYPE.Derivatives]: {
+                        source: Icon.Dot, tintColor: Color.Brown
+                    }
+                }
                 return (
-                    <List.Section key={idx} title={result.type}>
+                    <List.Section key={idx} title={result.title}>
                         {result.children?.map((item) => {
-                            if (item.title.length > 50) {
-                                props.setShowDetail(true)
-                            }
-                            else {
-                                props.setShowDetail(false)
-                            }
                             return (
                                 <List.Item
                                     key={item.key}
-                                    icon={Icon.Text}
+                                    icon={iconMaps[result.type!]}
                                     title={item.title}
                                     subtitle={item?.subtitle}
                                     accessoryTitle={item.phonetic}
-                                    detail={
-                                        <List.Item.Detail markdown={item.title}/>
-                                    }
+                                    detail={<List.Item.Detail markdown={item.title}/>}
                                     actions={
                                         <ListActionPanel
                                             queryText={props.inputState}

@@ -2,7 +2,7 @@ import axios from "axios"
 import crypto from "crypto"
 import querystring from "node:querystring"
 import { getPreferenceValues } from "@raycast/api"
-import { COPY_TYPE, LANGUAGE_LIST } from "./consts"
+import { COPY_TYPE, LANGUAGE_LIST, RESULT_TYPE } from "./consts";
 
 export function formatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
     const reformatData: ITranslateReformatResult[] = []
@@ -11,48 +11,6 @@ export function formatTranslateResult(data: ITranslateResult): ITranslateReforma
     LANGUAGE_LIST.some(item => item.languageId === from && (from = item.languageTitle))
     LANGUAGE_LIST.some(item => item.languageId === to && (to = item.languageTitle))
 
-    const steps = 45
-    const translationResult = data.translation[0]
-
-    function loopSplit(text: string, callback: (str: string) => void) {
-        callback(text.slice(0, steps))
-
-        if (text.length > steps) {
-            loopSplit(text.slice(steps), callback)
-        }
-    }
-
-    // if (translationResult.length > steps) {
-    //     const translationResultList:string[] = []
-    //     loopSplit(translationResult, text => translationResultList.push(text))
-    //
-    //     reformatData.push({
-    //         type: `${from} -> ${to}`,
-    //         children: translationResultList.map((text, idx) => {
-    //             const partOfAll = `${idx+1}/${translationResultList.length}`
-    //             return {
-    //                 title: text,
-    //                 key: text + idx,
-    //                 phonetic: partOfAll
-    //             }
-    //         })
-    //     })
-    //
-    //     // console.log(textList, 'translationResult', translationResult)
-    // }
-    // else {
-        reformatData.push({
-            type: `${from} -> ${to}`,
-            children: data.translation?.map((text, idx) => {
-                return {
-                    title: text,
-                    key: text + idx,
-                    phonetic: data.basic?.phonetic,
-                }
-            }),
-        })
-    // }
-
     // Delete repeated text item
     // 在有道结果中 Translation 目前观测虽然是数组，但只会返回length为1的结果，而且重复只是和explains[0]。
     if (data.basic?.explains && data?.translation) {
@@ -60,21 +18,43 @@ export function formatTranslateResult(data: ITranslateResult): ITranslateReforma
     }
 
     reformatData.push({
-        children: data.basic?.explains?.map((text, idx) => {
-            return { title: text, key: text + idx }
-        }),
-    })
-
-    reformatData.push({
-        type: "Derivatives",
-        children: data.web?.map((webResultItem, idx) => {
+        type: RESULT_TYPE.Standard,
+        title: `${from} -> ${to}`,
+        children: data.translation?.map((text, idx) => {
             return {
-                title: webResultItem.key,
-                key: webResultItem.key + idx,
-                subtitle: webResultItem.value.join("；"),
+                title: text,
+                key: text + idx,
+                phonetic: data.basic?.phonetic,
             }
         }),
     })
+
+    if (data.basic) {
+        reformatData.push({
+            type: RESULT_TYPE.Detail,
+            children: data.basic.explains?.map((text, idx) => {
+                return { title: text, key: text + idx }
+            }),
+        })
+    }
+
+    if (data.web) {
+        reformatData.push({
+            type: RESULT_TYPE.Derivatives,
+            title: RESULT_TYPE.Derivatives,
+            children: data.web.map((webResultItem, idx) => {
+                return {
+                    title: webResultItem.key,
+                    key: webResultItem.key + idx,
+                    subtitle: webResultItem.value.join("；"),
+                }
+            }),
+        })
+    }
+
+    if (reformatData.length === 1) {
+
+    }
 
     return reformatData
 }

@@ -13,7 +13,7 @@ let delayUpdateTargetLanguageTimer: NodeJS.Timeout
 export default function () {
     const [inputState, updateInputState] = useState<string>()
     const [isLoadingState, updateLoadingState] = useState<boolean>(false)
-    const [isShowListDetail, setIsShowListDetail] = useState<boolean>(false)
+    const [isShowListDetail, setShowListDetail] = useState<boolean>(false)
 
     const preferences: IPreferences = getPreferenceValues()
     const defaultLanguage1 = getLanguageListItem(preferences.lang1)
@@ -68,7 +68,14 @@ export default function () {
 
             updateLoadingState(false)
             fetchResultStateCode = res.data.errorCode
-            updateTranslateResultState(formatTranslateResult(resData))
+
+            const formattedData = formatTranslateResult(resData)
+            const formattedDataItem:ITranslateReformatResult = formattedData[0]
+            const formattedDataItemResultLength = formattedDataItem.children[0].title.length
+            const resultLengthLimit = formattedDataItemResultLength > 50
+            setShowListDetail(formattedData.length === 1 && formattedDataItem.children.length === 1 && resultLengthLimit)
+
+            updateTranslateResultState(formattedData)
             updateCurrentFromLanguageState(getLanguageListItem(from))
         })
     }
@@ -112,7 +119,6 @@ export default function () {
                     doTranslate={translate}
                     inputState={inputState}
                     copyModeState={copyModeState}
-                    setShowDetail={setIsShowListDetail}
                     translateResultState={translateResultState}
                     currentTargetLanguage={currentTargetLanguage}
                     currentFromLanguageState={currentFromLanguageState}
@@ -127,10 +133,10 @@ export default function () {
 
     return (
         <List
-            isShowingDetail={isShowListDetail}
             isLoading={isLoadingState}
-            searchBarPlaceholder={"Translate text"}
+            isShowingDetail={isShowListDetail}
             onSearchTextChange={onInputChangeEvt}
+            searchBarPlaceholder={"Translate text"}
             actions={
                 <ActionPanel>
                     <ActionFeedback />
