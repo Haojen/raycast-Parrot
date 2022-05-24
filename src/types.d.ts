@@ -1,5 +1,5 @@
 type COPY_TYPE = "Normal" | "Uppercase" | "LowercaseCamelCase"
-type RESULT_TYPE = 'Standard' | 'Detail' | 'Derivatives'
+type RESULT_TYPE = "Standard" | "Detail" | "Derivatives"
 
 interface ITranslateResult {
     l: string

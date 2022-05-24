@@ -5,9 +5,9 @@ export enum COPY_TYPE {
 }
 
 export enum RESULT_TYPE {
-    Standard = 'Standard',
-    Detail = 'Detail',
-    Derivatives = 'Derivatives'
+    Standard = "Standard",
+    Detail = "Detail",
+    Derivatives = "Derivatives",
 }
 
 export const LANGUAGE_LIST: ILanguageListItem[] = [

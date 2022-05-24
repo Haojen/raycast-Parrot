@@ -70,10 +70,12 @@ export default function () {
             fetchResultStateCode = res.data.errorCode
 
             const formattedData = formatTranslateResult(resData)
-            const formattedDataItem:ITranslateReformatResult = formattedData[0]
+            const formattedDataItem: ITranslateReformatResult = formattedData[0]
             const formattedDataItemResultLength = formattedDataItem.children[0].title.length
             const resultLengthLimit = formattedDataItemResultLength > 50
-            setShowListDetail(formattedData.length === 1 && formattedDataItem.children.length === 1 && resultLengthLimit)
+            setShowListDetail(
+                formattedData.length === 1 && formattedDataItem.children.length === 1 && resultLengthLimit
+            )
 
             updateTranslateResultState(formattedData)
             updateCurrentFromLanguageState(getLanguageListItem(from))

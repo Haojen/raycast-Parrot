@@ -2,14 +2,14 @@ import axios from "axios"
 import crypto from "crypto"
 import querystring from "node:querystring"
 import { getPreferenceValues } from "@raycast/api"
-import { COPY_TYPE, LANGUAGE_LIST, RESULT_TYPE } from "./consts";
+import { COPY_TYPE, LANGUAGE_LIST, RESULT_TYPE } from "./consts"
 
 export function formatTranslateResult(data: ITranslateResult): ITranslateReformatResult[] {
     const reformatData: ITranslateReformatResult[] = []
-    let [from, to] = data.l.split('2')
+    let [from, to] = data.l.split("2")
 
-    LANGUAGE_LIST.some(item => item.languageId === from && (from = item.languageTitle))
-    LANGUAGE_LIST.some(item => item.languageId === to && (to = item.languageTitle))
+    LANGUAGE_LIST.some((item) => item.languageId === from && (from = item.languageTitle))
+    LANGUAGE_LIST.some((item) => item.languageId === to && (to = item.languageTitle))
 
     // Delete repeated text item
     // 在有道结果中 Translation 目前观测虽然是数组，但只会返回length为1的结果，而且重复只是和explains[0]。
@@ -53,7 +53,6 @@ export function formatTranslateResult(data: ITranslateResult): ITranslateReforma
     }
 
     if (reformatData.length === 1) {
-
     }
 
     return reformatData
