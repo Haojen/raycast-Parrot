@@ -13,6 +13,7 @@
 2. Support Play TTS (Text to Speech)
 3. Support Copy Auto Paste, also support **lowerCamelCase** and **ALL_UPPERCASE** copy mode.
 4. Quick translation to another language
+5. Use third-party dictionary queries. now we only support EuDic(欧路词典)
 
 ## Documents
 
