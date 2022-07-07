@@ -7,6 +7,12 @@
 <p align="center">A Raycast translation Extension, Powerful and Easy to use. </p>
 <p align="center">🇺🇸 🇬🇧 🇩🇪 🇫🇷 🇨🇳 🇯🇵 🇷🇺 🇪🇸 🇵🇹 🇬🇷 🇫🇮 🇦🇷 🇮🇩 🇨🇦 🇰🇷 🇮🇹 🇦🇪 🇳🇴 🇲🇽 🇮🇱 🇸🇰 🇹🇷 🇵🇱 🇨🇿 🇭🇺 🇭🇹 🇹🇭 🇳🇱 🇸🇪 🇦🇺</p>
 
+<p align="center">
+  <a title="Install Parrot Translate Raycast Extension" href="https://www.raycast.com/Haojen/parrot-translate#install">
+    <img height="64" style="height: 64px" src="https://assets.raycast.com/Haojen/parrot-translate/install_button@2x.png">
+  </a>      
+</p>
+
 ## Features
 
 1. Supports 26+ languages.
